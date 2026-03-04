@@ -776,10 +776,11 @@ async function main() {
   console.log(`  Trade scenarios: ${[mcdavid && marner, huberdeau && kane, kane].filter(Boolean).length}`);
   console.log(`  Saved reports: ${[comparisonPlayers.length >= 3, valueTargets.length >= 3].filter(Boolean).length}`);
 
-  // ── Seed team transactions and injuries ──
-  console.log("  Seeding transactions and injuries...");
+  // ── Seed team transactions, injuries, and draft picks for ALL 32 teams ──
+  console.log("  Seeding transactions, injuries, and draft picks for all 32 teams...");
 
   const now = new Date();
+  const txRng = seededRandom(7777);
 
   function recentDate(daysAgo: number): Date {
     const d = new Date(now);
@@ -787,94 +788,397 @@ async function main() {
     return d;
   }
 
-  const txEntries: Array<{ team: string; type: "TRADE" | "SIGNING" | "WAIVER" | "RECALL"; desc: string; days: number }> = [
-    { team: "TOR", type: "SIGNING", desc: "Signed F Bobby McMann to a 3-year, $6.75M extension", days: 5 },
-    { team: "TOR", type: "TRADE", desc: "Acquired D Chris Tanev from DAL for a 2026 2nd-round pick", days: 18 },
-    { team: "TOR", type: "RECALL", desc: "Recalled F Fraser Minten from AHL Toronto Marlies", days: 25 },
-    { team: "TOR", type: "WAIVER", desc: "Placed D Timothy Liljegren on waivers", days: 40 },
-    { team: "EDM", type: "SIGNING", desc: "Signed F Leon Draisaitl to an 8-year, $112M extension", days: 3 },
-    { team: "EDM", type: "TRADE", desc: "Acquired F Vasily Podkolzin from VAN for a 2026 4th-round pick", days: 12 },
-    { team: "EDM", type: "RECALL", desc: "Recalled D Philip Broberg from AHL Bakersfield", days: 30 },
-    { team: "COL", type: "TRADE", desc: "Acquired F Mikko Rantanen from CAR in three-team deal", days: 8 },
-    { team: "COL", type: "SIGNING", desc: "Signed G Alexandar Georgiev to a 1-year, $3.4M deal", days: 22 },
-    { team: "COL", type: "WAIVER", desc: "Claimed F Miles Wood off waivers from NJD", days: 35 },
-    { team: "NYR", type: "TRADE", desc: "Traded D Jacob Trouba to ANA for draft picks", days: 6 },
-    { team: "NYR", type: "SIGNING", desc: "Signed F Artemi Panarin to a 5-year extension", days: 15 },
-    { team: "NYR", type: "RECALL", desc: "Recalled F Brennan Othmann from AHL Hartford", days: 28 },
-    { team: "DET", type: "SIGNING", desc: "Signed D Simon Edvinsson to a 3-year, $3.15M extension", days: 4 },
-    { team: "DET", type: "TRADE", desc: "Acquired F Vladimir Tarasenko in a deadline deal with OTT", days: 10 },
-    { team: "DET", type: "WAIVER", desc: "Placed F Robby Fabbri on unconditional waivers", days: 45 },
-    { team: "FLA", type: "SIGNING", desc: "Signed G Sergei Bobrovsky to a 2-year extension", days: 7 },
-    { team: "FLA", type: "TRADE", desc: "Acquired D Oliver Ekman-Larsson from TOR for future considerations", days: 20 },
-    { team: "CAR", type: "TRADE", desc: "Traded F Martin Necas to COL in three-team deal", days: 8 },
-    { team: "CAR", type: "SIGNING", desc: "Signed F Sebastian Aho to a 8-year, $78M extension", days: 14 },
-    { team: "CAR", type: "RECALL", desc: "Recalled D Scott Morrow from AHL Chicago", days: 33 },
-    { team: "WPG", type: "SIGNING", desc: "Signed G Connor Hellebuyck to a 6-year, $49.5M extension", days: 9 },
-    { team: "WPG", type: "TRADE", desc: "Acquired F Nikolaj Ehlers from NYI for a 2026 1st-round pick", days: 16 },
-    { team: "DAL", type: "SIGNING", desc: "Signed F Jason Robertson to a 4-year, $31.2M extension", days: 11 },
-    { team: "DAL", type: "TRADE", desc: "Traded D Chris Tanev to TOR for a 2026 2nd-round pick", days: 18 },
-    { team: "DAL", type: "RECALL", desc: "Recalled F Logan Stankoven from AHL Texas Stars", days: 42 },
-    { team: "BOS", type: "SIGNING", desc: "Signed D Charlie McAvoy to a 4-year, $38.4M extension", days: 13 },
-    { team: "BOS", type: "TRADE", desc: "Acquired F Tyler Bertuzzi from CHI for a 2026 3rd-round pick", days: 21 },
-    { team: "BOS", type: "WAIVER", desc: "Placed F Jakub Lauko on waivers", days: 38 },
-  ];
+  // All 32 team abbreviations
+  const allTeamAbbrevs = TEAMS.map((t) => t.abbrev);
 
-  for (const tx of txEntries) {
-    const tid = teamMap.get(tx.team);
+  // ── Transaction templates per team ──
+  // Each team gets 4 realistic transactions: 2 TRADE, 1 SIGNING, 1 WAIVER/RECALL
+  const teamTransactions: Record<string, Array<{ type: "TRADE" | "SIGNING" | "WAIVER" | "RECALL"; desc: string; days: number }>> = {
+    ANA: [
+      { type: "TRADE", desc: "Acquired D Jacob Trouba from NYR for a 2026 2nd-round pick and 2027 conditional 5th", days: 6 },
+      { type: "TRADE", desc: "Traded F Adam Henrique to VGK for a 2026 3rd-round pick", days: 42 },
+      { type: "SIGNING", desc: "Signed F Leo Carlsson to a 3-year, $4.5M extension", days: 15 },
+      { type: "WAIVER", desc: "Placed F Brett Leason on waivers", days: 30 },
+    ],
+    BOS: [
+      { type: "TRADE", desc: "Acquired F Tyler Bertuzzi from CHI for a 2026 3rd-round pick", days: 21 },
+      { type: "TRADE", desc: "Traded D Matt Grzelcyk to PIT for a 2026 5th-round pick", days: 45 },
+      { type: "SIGNING", desc: "Signed D Charlie McAvoy to a 4-year, $38.4M extension", days: 13 },
+      { type: "RECALL", desc: "Recalled F Fabian Lysell from AHL Providence", days: 8 },
+    ],
+    BUF: [
+      { type: "TRADE", desc: "Acquired D Bowen Byram from COL for a 2026 2nd-round pick", days: 10 },
+      { type: "TRADE", desc: "Traded F Jeff Skinner to EDM for a 2026 4th-round pick and prospect", days: 55 },
+      { type: "SIGNING", desc: "Signed F Tage Thompson to a 7-year, $50M extension", days: 20 },
+      { type: "WAIVER", desc: "Placed F Zemgus Girgensons on waivers", days: 35 },
+    ],
+    CGY: [
+      { type: "TRADE", desc: "Traded F Jonathan Huberdeau to DET with a 2026 1st-round pick", days: 12 },
+      { type: "TRADE", desc: "Acquired D prospect and 2027 2nd-round pick from SEA for F Andrew Mangiapane", days: 38 },
+      { type: "SIGNING", desc: "Signed F Connor Zary to a 2-year, $3.1M bridge deal", days: 18 },
+      { type: "RECALL", desc: "Recalled F Matthew Coronato from AHL Calgary Wranglers", days: 5 },
+    ],
+    CAR: [
+      { type: "TRADE", desc: "Traded F Martin Necas to COL in a three-team deal", days: 8 },
+      { type: "TRADE", desc: "Acquired F Mikko Rantanen from COL for F Martin Necas and draft capital", days: 8 },
+      { type: "SIGNING", desc: "Signed F Sebastian Aho to an 8-year, $78M extension", days: 14 },
+      { type: "RECALL", desc: "Recalled D Scott Morrow from AHL Chicago Wolves", days: 33 },
+    ],
+    CHI: [
+      { type: "TRADE", desc: "Traded F Tyler Bertuzzi to BOS for a 2026 3rd-round pick", days: 21 },
+      { type: "TRADE", desc: "Acquired a 2026 2nd-round pick from MIN for F Jason Dickinson", days: 50 },
+      { type: "SIGNING", desc: "Signed F Connor Bedard to a 3-year, $10.5M extension", days: 10 },
+      { type: "WAIVER", desc: "Placed F Colin Blackwell on waivers", days: 28 },
+    ],
+    COL: [
+      { type: "TRADE", desc: "Acquired F Mikko Rantanen from CAR in a three-team deal", days: 8 },
+      { type: "TRADE", desc: "Traded D Bowen Byram to BUF for a 2026 2nd-round pick", days: 10 },
+      { type: "SIGNING", desc: "Signed G Alexandar Georgiev to a 1-year, $3.4M deal", days: 22 },
+      { type: "WAIVER", desc: "Claimed F Miles Wood off waivers from NJD", days: 35 },
+    ],
+    CBJ: [
+      { type: "TRADE", desc: "Traded F Patrik Laine to MTL for a 2026 1st-round pick and prospect", days: 15 },
+      { type: "TRADE", desc: "Acquired a 2027 3rd-round pick from PHI for D Erik Gudbranson", days: 40 },
+      { type: "SIGNING", desc: "Signed F Kirill Marchenko to a 3-year, $5.9M extension", days: 8 },
+      { type: "RECALL", desc: "Recalled F James van Riemsdyk from AHL Cleveland", days: 20 },
+    ],
+    DAL: [
+      { type: "TRADE", desc: "Traded D Chris Tanev to TOR for a 2026 2nd-round pick", days: 18 },
+      { type: "TRADE", desc: "Acquired F Max Pacioretty from WSH for future considerations", days: 48 },
+      { type: "SIGNING", desc: "Signed F Jason Robertson to a 4-year, $31.2M extension", days: 11 },
+      { type: "RECALL", desc: "Recalled F Logan Stankoven from AHL Texas Stars", days: 42 },
+    ],
+    DET: [
+      { type: "TRADE", desc: "Acquired F Vladimir Tarasenko in a deadline deal with OTT", days: 10 },
+      { type: "TRADE", desc: "Traded G Ville Husso to ANA for a 2027 4th-round pick", days: 52 },
+      { type: "SIGNING", desc: "Signed D Simon Edvinsson to a 3-year, $3.15M extension", days: 4 },
+      { type: "WAIVER", desc: "Placed F Robby Fabbri on unconditional waivers", days: 45 },
+    ],
+    EDM: [
+      { type: "TRADE", desc: "Acquired F Vasily Podkolzin from VAN for a 2026 4th-round pick", days: 12 },
+      { type: "TRADE", desc: "Traded D Cody Ceci to SJS for a 2027 5th-round pick", days: 50 },
+      { type: "SIGNING", desc: "Signed F Leon Draisaitl to an 8-year, $112M extension", days: 3 },
+      { type: "RECALL", desc: "Recalled D Philip Broberg from AHL Bakersfield", days: 30 },
+    ],
+    FLA: [
+      { type: "TRADE", desc: "Acquired D Oliver Ekman-Larsson from TOR for future considerations", days: 20 },
+      { type: "TRADE", desc: "Traded a 2027 4th-round pick to CBJ for F Dmitri Voronkov", days: 35 },
+      { type: "SIGNING", desc: "Signed G Sergei Bobrovsky to a 2-year extension", days: 7 },
+      { type: "RECALL", desc: "Recalled F Mackie Samoskevich from AHL Charlotte", days: 14 },
+    ],
+    LAK: [
+      { type: "TRADE", desc: "Acquired F Tanner Jeannot from TBL for a 2026 4th-round pick", days: 9 },
+      { type: "TRADE", desc: "Traded D Sean Walker to PHI for a 2027 6th-round pick", days: 55 },
+      { type: "SIGNING", desc: "Signed F Adrian Kempe to a 4-year, $22M extension", days: 16 },
+      { type: "WAIVER", desc: "Placed F Carl Grundstrom on waivers", days: 28 },
+    ],
+    MIN: [
+      { type: "TRADE", desc: "Acquired F Marcus Johansson from COL for a 2026 5th-round pick", days: 14 },
+      { type: "TRADE", desc: "Traded D John Klingberg to PIT for future considerations", days: 48 },
+      { type: "SIGNING", desc: "Signed F Kirill Kaprizov to an 8-year, $87M extension", days: 5 },
+      { type: "RECALL", desc: "Recalled F Marco Rossi from AHL Iowa Wild", days: 22 },
+    ],
+    MTL: [
+      { type: "TRADE", desc: "Acquired F Patrik Laine from CBJ for a 2026 1st-round pick and prospect", days: 15 },
+      { type: "TRADE", desc: "Traded D David Savard to WPG for a 2027 4th-round pick", days: 44 },
+      { type: "SIGNING", desc: "Signed F Nick Suzuki to a 7-year, $56M extension", days: 10 },
+      { type: "WAIVER", desc: "Placed F Joel Armia on waivers", days: 32 },
+    ],
+    NSH: [
+      { type: "TRADE", desc: "Traded F Ryan O'Reilly to TOR for a 2026 2nd-round pick and prospect", days: 11 },
+      { type: "TRADE", desc: "Acquired a 2027 3rd-round pick from STL for D Jeremy Lauzon", days: 40 },
+      { type: "SIGNING", desc: "Signed G Juuse Saros to a 6-year, $45M extension", days: 18 },
+      { type: "RECALL", desc: "Recalled F Philip Tomasino from AHL Milwaukee", days: 7 },
+    ],
+    NJD: [
+      { type: "TRADE", desc: "Acquired D Brenden Dillon from WPG for a 2026 4th-round pick", days: 12 },
+      { type: "TRADE", desc: "Traded G Mackenzie Blackwood to COL in a multi-player deal", days: 45 },
+      { type: "SIGNING", desc: "Signed F Jack Hughes to an 8-year, $64M extension", days: 8 },
+      { type: "WAIVER", desc: "Placed F Miles Wood on waivers", days: 35 },
+    ],
+    NYI: [
+      { type: "TRADE", desc: "Traded F Nikolaj Ehlers to WPG for a 2026 1st-round pick", days: 16 },
+      { type: "TRADE", desc: "Acquired D Scott Perunovich from STL for a 2027 5th-round pick", days: 38 },
+      { type: "SIGNING", desc: "Signed F Mathew Barzal to a 4-year, $30M extension", days: 6 },
+      { type: "RECALL", desc: "Recalled F Aatu Raty from AHL Bridgeport", days: 20 },
+    ],
+    NYR: [
+      { type: "TRADE", desc: "Traded D Jacob Trouba to ANA for draft picks", days: 6 },
+      { type: "TRADE", desc: "Acquired F Reilly Smith from PIT for a 2026 3rd-round pick", days: 42 },
+      { type: "SIGNING", desc: "Signed F Artemi Panarin to a 5-year extension", days: 15 },
+      { type: "RECALL", desc: "Recalled F Brennan Othmann from AHL Hartford", days: 28 },
+    ],
+    OTT: [
+      { type: "TRADE", desc: "Traded F Vladimir Tarasenko to DET for a 2027 3rd-round pick", days: 10 },
+      { type: "TRADE", desc: "Acquired F Nick Paul from TBL for a 2026 5th-round pick", days: 50 },
+      { type: "SIGNING", desc: "Signed D Thomas Chabot to a 6-year, $49.5M extension", days: 12 },
+      { type: "RECALL", desc: "Recalled F Ridly Greig from AHL Belleville", days: 18 },
+    ],
+    PHI: [
+      { type: "TRADE", desc: "Traded D Ivan Provorov to CBJ for a 2026 2nd-round pick and D Erik Gudbranson", days: 40 },
+      { type: "TRADE", desc: "Acquired D Sean Walker from LAK for a 2027 6th-round pick", days: 55 },
+      { type: "SIGNING", desc: "Signed F Travis Konecny to a 7-year, $57.5M extension", days: 9 },
+      { type: "WAIVER", desc: "Placed F Nicolas Deslauriers on waivers", days: 25 },
+    ],
+    PIT: [
+      { type: "TRADE", desc: "Acquired D Matt Grzelcyk from BOS for a 2026 5th-round pick", days: 45 },
+      { type: "TRADE", desc: "Traded F Reilly Smith to NYR for a 2026 3rd-round pick", days: 42 },
+      { type: "SIGNING", desc: "Signed F Sidney Crosby to a 2-year, $17.4M extension", days: 4 },
+      { type: "RECALL", desc: "Recalled F Samuel Poulin from AHL Wilkes-Barre", days: 15 },
+    ],
+    SJS: [
+      { type: "TRADE", desc: "Acquired D Cody Ceci from EDM for a 2027 5th-round pick", days: 50 },
+      { type: "TRADE", desc: "Traded F Alexander Barabanov to FLA for a 2027 6th-round pick", days: 38 },
+      { type: "SIGNING", desc: "Signed F Macklin Celebrini to a 3-year, $10.5M ELC extension", days: 8 },
+      { type: "WAIVER", desc: "Placed F Luke Kunin on waivers", days: 22 },
+    ],
+    SEA: [
+      { type: "TRADE", desc: "Traded F Andre Burakovsky to COL for a 2026 4th-round pick", days: 14 },
+      { type: "TRADE", desc: "Acquired a 2027 2nd-round pick from CGY for F Andrew Mangiapane", days: 38 },
+      { type: "SIGNING", desc: "Signed F Matty Beniers to a 3-year, $5.4M bridge deal", days: 10 },
+      { type: "RECALL", desc: "Recalled F Shane Wright from AHL Coachella Valley", days: 5 },
+    ],
+    STL: [
+      { type: "TRADE", desc: "Traded D Torey Krug to NYI for a 2027 3rd-round pick", days: 18 },
+      { type: "TRADE", desc: "Acquired a 2026 4th-round pick from NJD for F Jakub Vrana", days: 50 },
+      { type: "SIGNING", desc: "Signed F Robert Thomas to a 7-year, $56.5M extension", days: 7 },
+      { type: "WAIVER", desc: "Placed F Kasperi Kapanen on waivers", days: 30 },
+    ],
+    TBL: [
+      { type: "TRADE", desc: "Traded F Tanner Jeannot to LAK for a 2026 4th-round pick", days: 9 },
+      { type: "TRADE", desc: "Acquired a 2027 3rd-round pick from OTT for F Nick Paul", days: 50 },
+      { type: "SIGNING", desc: "Signed F Nikita Kucherov to a 4-year, $49M extension", days: 11 },
+      { type: "RECALL", desc: "Recalled F Gage Goncalves from AHL Syracuse", days: 20 },
+    ],
+    TOR: [
+      { type: "TRADE", desc: "Acquired D Chris Tanev from DAL for a 2026 2nd-round pick", days: 18 },
+      { type: "TRADE", desc: "Traded F Ryan O'Reilly to NSH for a 2026 2nd-round pick and prospect", days: 48 },
+      { type: "SIGNING", desc: "Signed F Bobby McMann to a 3-year, $6.75M extension", days: 5 },
+      { type: "WAIVER", desc: "Placed D Timothy Liljegren on waivers", days: 40 },
+    ],
+    UTA: [
+      { type: "TRADE", desc: "Acquired F Sean Monahan from WPG for a 2027 4th-round pick", days: 12 },
+      { type: "TRADE", desc: "Traded D Michael Kesselring to STL for a 2026 5th-round pick", days: 42 },
+      { type: "SIGNING", desc: "Signed F Clayton Keller to a 4-year, $29M extension", days: 9 },
+      { type: "RECALL", desc: "Recalled F Josh Doan from AHL Tucson", days: 16 },
+    ],
+    VAN: [
+      { type: "TRADE", desc: "Traded F Vasily Podkolzin to EDM for a 2026 4th-round pick", days: 12 },
+      { type: "TRADE", desc: "Acquired D Filip Hronek from PIT in a multi-player deal", days: 45 },
+      { type: "SIGNING", desc: "Signed F Elias Pettersson to an 8-year, $92.8M extension", days: 6 },
+      { type: "WAIVER", desc: "Placed F Dakota Joshua on waivers", days: 30 },
+    ],
+    VGK: [
+      { type: "TRADE", desc: "Acquired F Adam Henrique from ANA for a 2026 3rd-round pick", days: 42 },
+      { type: "TRADE", desc: "Traded D Shea Theodore to DAL for a 2026 1st-round pick and F prospect", days: 16 },
+      { type: "SIGNING", desc: "Signed F Jack Eichel to a 6-year, $63M extension", days: 8 },
+      { type: "RECALL", desc: "Recalled F Brendan Brisson from AHL Henderson", days: 22 },
+    ],
+    WPG: [
+      { type: "TRADE", desc: "Acquired F Nikolaj Ehlers from NYI for a 2026 1st-round pick", days: 16 },
+      { type: "TRADE", desc: "Traded D Brenden Dillon to NJD for a 2026 4th-round pick", days: 12 },
+      { type: "SIGNING", desc: "Signed G Connor Hellebuyck to a 6-year, $49.5M extension", days: 9 },
+      { type: "RECALL", desc: "Recalled F Cole Perfetti from AHL Manitoba", days: 25 },
+    ],
+    WSH: [
+      { type: "TRADE", desc: "Traded F Max Pacioretty to DAL for future considerations", days: 48 },
+      { type: "TRADE", desc: "Acquired D Joel Edmundson from TOR for a 2027 5th-round pick", days: 35 },
+      { type: "SIGNING", desc: "Signed F Tom Wilson to a 4-year, $26M extension", days: 7 },
+      { type: "RECALL", desc: "Recalled F Connor McMichael from AHL Hershey", days: 14 },
+    ],
+  };
+
+  // Create all transactions
+  const txData: Array<{ teamId: string; type: "TRADE" | "SIGNING" | "WAIVER" | "RECALL"; description: string; playersInvolved: never[]; date: Date }> = [];
+  for (const abbrev of allTeamAbbrevs) {
+    const tid = teamMap.get(abbrev);
     if (!tid) continue;
-    await prisma.transaction.create({
-      data: {
+    const entries = teamTransactions[abbrev] ?? [];
+    for (const tx of entries) {
+      txData.push({
         teamId: tid,
         type: tx.type,
         description: tx.desc,
         playersInvolved: [],
         date: recentDate(tx.days),
-      },
-    });
+      });
+    }
+  }
+  await prisma.transaction.createMany({ data: txData });
+
+  // ── Injuries for ALL 32 teams ──
+  // Fetch all players grouped by team for injury assignment
+  const allPlayersForInjuries = await prisma.player.findMany({
+    select: { id: true, fullName: true, position: true, currentTeamId: true },
+    where: { currentTeamId: { not: null } },
+  });
+  const playersByTeamId = new Map<string, Array<{ id: string; fullName: string; position: string }>>();
+  for (const p of allPlayersForInjuries) {
+    if (!p.currentTeamId) continue;
+    if (!playersByTeamId.has(p.currentTeamId)) playersByTeamId.set(p.currentTeamId, []);
+    playersByTeamId.get(p.currentTeamId)!.push({ id: p.id, fullName: p.fullName, position: p.position });
   }
 
-  const injuryEntries: Array<{ team: string; playerName: string; type: "DAY_TO_DAY" | "IR" | "LTIR" | "OUT"; desc: string; daysAgo: number; returnDays: number | null }> = [
-    { team: "TOR", playerName: "Auston Matthews", type: "DAY_TO_DAY", desc: "Upper body", daysAgo: 3, returnDays: 5 },
-    { team: "TOR", playerName: "John Tavares", type: "IR", desc: "Lower body", daysAgo: 14, returnDays: 21 },
-    { team: "EDM", playerName: "Evander Kane", type: "LTIR", desc: "Wrist surgery", daysAgo: 45, returnDays: null },
-    { team: "COL", playerName: "Gabriel Landeskog", type: "LTIR", desc: "Knee - ACL recovery", daysAgo: 180, returnDays: null },
-    { team: "NYR", playerName: "Alexis Lafreniere", type: "DAY_TO_DAY", desc: "Upper body", daysAgo: 2, returnDays: 4 },
-    { team: "DET", playerName: "Tyler Bertuzzi", type: "IR", desc: "Hand fracture", daysAgo: 10, returnDays: 28 },
-    { team: "DET", playerName: "Jeff Petry", type: "DAY_TO_DAY", desc: "Lower body", daysAgo: 5, returnDays: 7 },
-    { team: "CAR", playerName: "Frederik Andersen", type: "IR", desc: "Knee", daysAgo: 20, returnDays: 35 },
-    { team: "CAR", playerName: "Jesperi Kotkaniemi", type: "DAY_TO_DAY", desc: "Upper body", daysAgo: 4, returnDays: 7 },
-    { team: "WPG", playerName: "Nikolaj Ehlers", type: "IR", desc: "Ankle sprain", daysAgo: 12, returnDays: 30 },
-    { team: "FLA", playerName: "Aleksander Barkov", type: "DAY_TO_DAY", desc: "Lower body", daysAgo: 3, returnDays: 6 },
-    { team: "DAL", playerName: "Tyler Seguin", type: "LTIR", desc: "Hip surgery recovery", daysAgo: 90, returnDays: null },
-    { team: "BOS", playerName: "Brad Marchand", type: "DAY_TO_DAY", desc: "Upper body", daysAgo: 2, returnDays: 5 },
+  const injuryDescriptions: Array<{ type: "DAY_TO_DAY" | "IR" | "LTIR"; desc: string; daysAgo: number; returnDays: number | null }> = [
+    { type: "DAY_TO_DAY", desc: "Upper body", daysAgo: 3, returnDays: 7 },
+    { type: "DAY_TO_DAY", desc: "Lower body", daysAgo: 5, returnDays: 10 },
+    { type: "DAY_TO_DAY", desc: "Illness", daysAgo: 1, returnDays: 3 },
+    { type: "IR", desc: "Lower body", daysAgo: 14, returnDays: 28 },
+    { type: "IR", desc: "Upper body", daysAgo: 10, returnDays: 21 },
+    { type: "IR", desc: "Hand fracture", daysAgo: 12, returnDays: 30 },
+    { type: "IR", desc: "Ankle sprain", daysAgo: 18, returnDays: 35 },
+    { type: "IR", desc: "Knee", daysAgo: 16, returnDays: 28 },
+    { type: "IR", desc: "Concussion protocol", daysAgo: 8, returnDays: 21 },
+    { type: "LTIR", desc: "Knee — ACL recovery", daysAgo: 90, returnDays: null },
+    { type: "LTIR", desc: "Shoulder surgery", daysAgo: 75, returnDays: null },
+    { type: "LTIR", desc: "Hip surgery recovery", daysAgo: 120, returnDays: null },
+    { type: "LTIR", desc: "Wrist surgery", daysAgo: 60, returnDays: null },
   ];
 
-  for (const inj of injuryEntries) {
-    const tid = teamMap.get(inj.team);
+  const injuryData: Array<{ playerId: string; teamId: string; type: "DAY_TO_DAY" | "IR" | "LTIR"; description: string; date: Date; expectedReturn: Date | null }> = [];
+  for (const abbrev of allTeamAbbrevs) {
+    const tid = teamMap.get(abbrev);
     if (!tid) continue;
-    const player = await prisma.player.findFirst({
-      where: { fullName: inj.playerName, currentTeamId: tid },
-      select: { id: true },
-    });
-    if (!player) continue;
-    const injDate = recentDate(inj.daysAgo);
-    const retDate = inj.returnDays ? new Date(injDate.getTime() + inj.returnDays * 24 * 60 * 60 * 1000) : null;
-    await prisma.injury.create({
-      data: {
-        playerId: player.id,
+    const teamPlayers = playersByTeamId.get(tid);
+    if (!teamPlayers || teamPlayers.length === 0) continue;
+
+    // Each team gets 2-4 injuries (deterministic via PRNG)
+    const injCount = 2 + Math.floor(txRng() * 3); // 2, 3, or 4
+    const usedPlayerIds = new Set<string>();
+
+    for (let i = 0; i < injCount && i < teamPlayers.length; i++) {
+      // Pick a player deterministically, avoiding duplicates
+      let playerIdx = Math.floor(txRng() * teamPlayers.length);
+      let attempts = 0;
+      while (usedPlayerIds.has(teamPlayers[playerIdx].id) && attempts < teamPlayers.length) {
+        playerIdx = (playerIdx + 1) % teamPlayers.length;
+        attempts++;
+      }
+      if (usedPlayerIds.has(teamPlayers[playerIdx].id)) continue;
+      usedPlayerIds.add(teamPlayers[playerIdx].id);
+
+      const injTemplate = injuryDescriptions[Math.floor(txRng() * injuryDescriptions.length)];
+      // Add some jitter to days so injuries are not all identical
+      const daysJitter = Math.floor(txRng() * 5);
+      const injDate = recentDate(injTemplate.daysAgo + daysJitter);
+      const retDate = injTemplate.returnDays
+        ? new Date(injDate.getTime() + injTemplate.returnDays * 24 * 60 * 60 * 1000)
+        : null;
+
+      injuryData.push({
+        playerId: teamPlayers[playerIdx].id,
         teamId: tid,
-        type: inj.type,
-        description: inj.desc,
+        type: injTemplate.type,
+        description: injTemplate.desc,
         date: injDate,
         expectedReturn: retDate,
-      },
-    });
+      });
+    }
   }
+  await prisma.injury.createMany({ data: injuryData });
+
+  // ── Draft picks for ALL 32 teams — 2025, 2026, 2027 ──
+  console.log("  Seeding draft picks for all 32 teams (2025-2027)...");
+
+  const draftYears = [2025, 2026, 2027];
+  const rounds = [1, 2, 3, 4, 5, 6, 7];
+
+  // Deterministic trade patterns: contenders trade picks to rebuilders
+  // Format: { from: contender, to: rebuilder, year, round }
+  const pickTrades: Array<{ from: string; to: string; year: number; round: number }> = [
+    // 2025 draft trades (most already happened)
+    { from: "EDM", to: "ANA", year: 2025, round: 1 },
+    { from: "FLA", to: "CHI", year: 2025, round: 1 },
+    { from: "TOR", to: "CBJ", year: 2025, round: 2 },
+    { from: "COL", to: "SJS", year: 2025, round: 2 },
+    { from: "DAL", to: "MTL", year: 2025, round: 3 },
+    { from: "NYR", to: "BUF", year: 2025, round: 3 },
+    { from: "VGK", to: "PHI", year: 2025, round: 4 },
+    { from: "TBL", to: "UTA", year: 2025, round: 4 },
+    { from: "WPG", to: "ANA", year: 2025, round: 5 },
+    { from: "CAR", to: "CHI", year: 2025, round: 5 },
+    { from: "BOS", to: "SJS", year: 2025, round: 6 },
+    // 2026 draft trades
+    { from: "EDM", to: "SJS", year: 2026, round: 1 },
+    { from: "TOR", to: "ANA", year: 2026, round: 2 },
+    { from: "FLA", to: "CBJ", year: 2026, round: 2 },
+    { from: "COL", to: "MTL", year: 2026, round: 3 },
+    { from: "DAL", to: "CHI", year: 2026, round: 3 },
+    { from: "NYR", to: "BUF", year: 2026, round: 4 },
+    { from: "VGK", to: "PHI", year: 2026, round: 4 },
+    { from: "WPG", to: "UTA", year: 2026, round: 5 },
+    { from: "CAR", to: "ANA", year: 2026, round: 6 },
+    { from: "TBL", to: "SJS", year: 2026, round: 6 },
+    { from: "BOS", to: "CBJ", year: 2026, round: 7 },
+    // 2027 draft trades
+    { from: "COL", to: "ANA", year: 2027, round: 1 },
+    { from: "FLA", to: "CHI", year: 2027, round: 2 },
+    { from: "TOR", to: "MTL", year: 2027, round: 2 },
+    { from: "EDM", to: "SJS", year: 2027, round: 3 },
+    { from: "DAL", to: "BUF", year: 2027, round: 3 },
+    { from: "NYR", to: "PHI", year: 2027, round: 4 },
+    { from: "VGK", to: "UTA", year: 2027, round: 4 },
+    { from: "WPG", to: "CBJ", year: 2027, round: 5 },
+    { from: "CAR", to: "ANA", year: 2027, round: 6 },
+    { from: "TBL", to: "CHI", year: 2027, round: 7 },
+  ];
+
+  // Build a lookup: "originalTeam-year-round" -> acquiring team abbreviation
+  const tradedPickLookup = new Map<string, string>();
+  for (const t of pickTrades) {
+    tradedPickLookup.set(`${t.from}-${t.year}-${t.round}`, t.to);
+  }
+
+  // Conditions for certain picks
+  const conditionedPicks = new Set([
+    "EDM-2026-1",   // lottery protected
+    "COL-2027-1",   // top-10 protected
+    "FLA-2025-1",   // lottery protected
+    "TOR-2026-2",   // becomes 1st if team misses playoffs
+    "DAL-2027-3",   // conditional on games played
+    "NYR-2027-4",   // conditional on re-signing
+    "VGK-2027-4",   // conditional
+  ]);
+
+  const conditionTexts: Record<string, string> = {
+    "EDM-2026-1": "Lottery protected — if pick is top 3, defers to 2027",
+    "COL-2027-1": "Top-10 protected — if pick is top 10, defers to 2028",
+    "FLA-2025-1": "Lottery protected — if pick is top 3, becomes 2026 1st",
+    "TOR-2026-2": "Upgrades to 2026 1st if Toronto misses playoffs",
+    "DAL-2027-3": "Conditional on traded player playing 50+ games",
+    "NYR-2027-4": "Conditional on player re-signing with acquiring team",
+    "VGK-2027-4": "Conditional on Vegas reaching conference finals",
+  };
+
+  const draftPickData: Array<{ teamId: string; originalTeamId: string; year: number; round: number; condition: string | null }> = [];
+  for (const abbrev of allTeamAbbrevs) {
+    const origTeamId = teamMap.get(abbrev)!;
+    for (const year of draftYears) {
+      for (const round of rounds) {
+        const tradeKey = `${abbrev}-${year}-${round}`;
+        const acquiringAbbrev = tradedPickLookup.get(tradeKey);
+        const ownerTeamId = acquiringAbbrev ? teamMap.get(acquiringAbbrev)! : origTeamId;
+        const condKey = `${abbrev}-${year}-${round}`;
+        const condition = conditionedPicks.has(condKey) ? (conditionTexts[condKey] ?? "Conditional") : null;
+
+        draftPickData.push({
+          teamId: ownerTeamId,
+          originalTeamId: origTeamId,
+          year,
+          round,
+          condition,
+        });
+      }
+    }
+  }
+  await prisma.draftPick.createMany({ data: draftPickData });
 
   const txCount = await prisma.transaction.count();
   const injCount = await prisma.injury.count();
-  console.log(`  Transactions: ${txCount}`);
-  console.log(`  Injuries: ${injCount}`);
+  const pickCount = await prisma.draftPick.count();
+  console.log(`  Transactions: ${txCount} (${allTeamAbbrevs.length} teams)`);
+  console.log(`  Injuries: ${injCount} (${allTeamAbbrevs.length} teams)`);
+  console.log(`  Draft picks: ${pickCount} (${draftYears.length} years × ${allTeamAbbrevs.length} teams × ${rounds.length} rounds)`);
 
   // ── 10. Sample analytics events ──
   console.log("  Seeding sample analytics events...");
@@ -977,6 +1281,9 @@ async function main() {
   const valueScoreCount = await prisma.playerValueScore.count();
   const impactStatsCount = await prisma.playerImpactStats.count();
   const analyticsCount = await prisma.analyticsEvent.count();
+  const draftPickCount = await prisma.draftPick.count();
+  const transactionCount = await prisma.transaction.count();
+  const injuryCount = await prisma.injury.count();
 
   console.log("\n✅ Seed complete!");
   console.log(`   Teams:          ${teamCount}`);
@@ -987,6 +1294,9 @@ async function main() {
   console.log(`   Advanced Stats: ${advStatsCount}`);
   console.log(`   Impact Stats:   ${impactStatsCount}`);
   console.log(`   Value Scores:   ${valueScoreCount}`);
+  console.log(`   Transactions:   ${transactionCount}`);
+  console.log(`   Injuries:       ${injuryCount}`);
+  console.log(`   Draft Picks:    ${draftPickCount}`);
   console.log(`   Analytics:      ${analyticsCount}`);
 }
 

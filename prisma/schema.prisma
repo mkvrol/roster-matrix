@@ -1,0 +1,576 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// Enums
+// ──────────────────────────────────────────────
+
+enum Position {
+  C
+  LW
+  RW
+  D
+  G
+}
+
+enum ContractStructure {
+  FRONT_LOADED
+  BACK_LOADED
+  EVEN
+  FLAT
+}
+
+enum SigningType {
+  RFA
+  UFA
+  ELC
+  EXTENSION
+}
+
+enum ContractStatus {
+  ACTIVE
+  FUTURE
+  EXPIRED
+}
+
+enum UserRole {
+  ADMIN
+  ANALYST
+  SCOUT
+  GM
+  VIEWER
+}
+
+enum ReportType {
+  PLAYER_EVAL
+  TRADE_ANALYSIS
+  CONTRACT_PROJECTION
+  COMPARISON
+  CUSTOM
+}
+
+enum NotificationType {
+  SCORE_CHANGE
+  TRADE_ALERT
+  CONTRACT_UPDATE
+  GAME_UPDATE
+  SYSTEM
+}
+
+// ──────────────────────────────────────────────
+// NextAuth Models
+// ──────────────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ──────────────────────────────────────────────
+// Core Domain Models
+// ──────────────────────────────────────────────
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  name             String?
+  passwordHash     String?
+  emailVerified    DateTime?
+  image            String?
+  role             UserRole  @default(VIEWER)
+  teamAffiliationId String?
+  lastLogin        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  teamAffiliation  Team?          @relation(fields: [teamAffiliationId], references: [id])
+  accounts         Account[]
+  sessions         Session[]
+  savedReports     SavedReport[]
+  tradeScenarios   TradeScenario[]
+  watchLists       WatchList[]
+  notifications    Notification[]
+
+  @@index([role])
+}
+
+model Team {
+  id             String  @id @default(cuid())
+  nhlApiId       Int     @unique
+  name           String
+  abbreviation   String  @unique
+  city           String
+  division       String
+  conference     String
+  logoUrl        String?
+  primaryColor   String?
+  secondaryColor String?
+
+  players        Player[]         @relation("CurrentPlayers")
+  contracts      Contract[]
+  seasonStats    SeasonStats[]
+  advancedStats  AdvancedStats[]
+  goalieStats    GoalieStats[]
+  affiliatedUsers User[]
+  draftedPlayers Player[]         @relation("DraftedPlayers")
+  transactions   Transaction[]
+  injuries       Injury[]
+  ownedDraftPicks   DraftPick[]   @relation("OwnerTeam")
+  originalDraftPicks DraftPick[]  @relation("OriginalTeam")
+}
+
+model Player {
+  id             String    @id @default(cuid())
+  nhlApiId       Int       @unique
+  firstName      String
+  lastName       String
+  fullName       String
+  position       Position
+  shootsCatches  String?
+  birthDate      DateTime?
+  birthCity      String?
+  birthCountry   String?
+  heightInches   Int?
+  weightLbs      Int?
+  isActive       Boolean   @default(true)
+  headshotUrl    String?
+  draftYear      Int?
+  draftRound     Int?
+  draftOverall   Int?
+  draftTeamId    String?
+  currentTeamId  String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  draftTeam      Team?            @relation("DraftedPlayers", fields: [draftTeamId], references: [id])
+  currentTeam    Team?            @relation("CurrentPlayers", fields: [currentTeamId], references: [id])
+  contracts      Contract[]
+  seasonStats    SeasonStats[]
+  advancedStats  AdvancedStats[]
+  valueScores    PlayerValueScore[]
+  goalieStats    GoalieStats[]
+  impactStats    PlayerImpactStats[]
+  watchListEntries WatchListPlayer[]
+  notifications    Notification[]
+  injuries         Injury[]
+
+  @@index([lastName, firstName])
+  @@index([position])
+  @@index([currentTeamId])
+  @@index([isActive])
+}
+
+model Contract {
+  id                     String            @id @default(cuid())
+  playerId               String
+  teamId                 String
+  startYear              Int
+  endYear                Int
+  totalYears             Int
+  aav                    Decimal           @db.Decimal(12, 2)
+  totalValue             Decimal           @db.Decimal(12, 2)
+  structure              ContractStructure @default(EVEN)
+  capHitByYear           Json
+  signingAge             Int?
+  hasNTC                 Boolean           @default(false)
+  hasNMC                 Boolean           @default(false)
+  tradeProtectionDetails String?           @db.Text
+  signingType            SigningType?
+  status                 ContractStatus    @default(ACTIVE)
+  source                 String?
+  createdAt              DateTime          @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  team   Team   @relation(fields: [teamId], references: [id])
+
+  @@index([playerId])
+  @@index([teamId])
+  @@index([startYear, endYear])
+  @@index([aav])
+  @@index([signingType])
+  @@index([status])
+}
+
+model SeasonStats {
+  id                  String  @id @default(cuid())
+  playerId            String
+  season              String
+  teamId              String?
+  gamesPlayed         Int     @default(0)
+  goals               Int     @default(0)
+  assists             Int     @default(0)
+  points              Int     @default(0)
+  plusMinus            Int     @default(0)
+  pim                 Int     @default(0)
+  toiPerGame          Decimal? @db.Decimal(6, 2)
+  shots               Int     @default(0)
+  shootingPct         Decimal? @db.Decimal(5, 2)
+  hits                Int     @default(0)
+  blocks              Int     @default(0)
+  takeaways           Int     @default(0)
+  giveaways           Int     @default(0)
+  faceoffPct          Decimal? @db.Decimal(5, 2)
+  gameWinningGoals    Int     @default(0)
+  overtimeGoals       Int     @default(0)
+  powerPlayGoals      Int     @default(0)
+  powerPlayAssists    Int     @default(0)
+  powerPlayPoints     Int     @default(0)
+  powerPlayToi        Decimal? @db.Decimal(6, 2)
+  shortHandedGoals    Int     @default(0)
+  shortHandedAssists  Int     @default(0)
+  shortHandedPoints   Int     @default(0)
+  shortHandedToi      Decimal? @db.Decimal(6, 2)
+  evenStrengthGoals   Int     @default(0)
+  evenStrengthAssists Int     @default(0)
+  evenStrengthPoints  Int     @default(0)
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  team   Team?  @relation(fields: [teamId], references: [id])
+
+  @@unique([playerId, season])
+  @@index([season])
+  @@index([teamId])
+  @@index([points])
+  @@index([goals])
+}
+
+model AdvancedStats {
+  id                          String   @id @default(cuid())
+  playerId                    String
+  season                      String
+  teamId                      String?
+  corsiFor                    Decimal? @db.Decimal(8, 2)
+  corsiAgainst                Decimal? @db.Decimal(8, 2)
+  corsiForPct                 Decimal? @db.Decimal(5, 2)
+  fenwickForPct               Decimal? @db.Decimal(5, 2)
+  expectedGoalsFor            Decimal? @db.Decimal(8, 4)
+  expectedGoalsAgainst        Decimal? @db.Decimal(8, 4)
+  xGFPct                      Decimal? @db.Decimal(5, 2)
+  goalsForPct                 Decimal? @db.Decimal(5, 2)
+  offensiveZoneStartPct       Decimal? @db.Decimal(5, 2)
+  defensiveZoneStartPct       Decimal? @db.Decimal(5, 2)
+  individualExpectedGoals     Decimal? @db.Decimal(8, 4)
+  individualHighDangerChances Int?
+  onIceShootingPct            Decimal? @db.Decimal(5, 2)
+  onIceSavePct                Decimal? @db.Decimal(5, 3)
+  pdo                         Decimal? @db.Decimal(6, 3)
+  relCorsiForPct              Decimal? @db.Decimal(6, 2)
+  relXGFPct                   Decimal? @db.Decimal(6, 2)
+  fiveOnFiveTOIPerGP          Decimal? @db.Decimal(6, 2)
+  ppTOIPerGP                  Decimal? @db.Decimal(6, 2)
+  pkTOIPerGP                  Decimal? @db.Decimal(6, 2)
+  goalsPer60                  Decimal? @db.Decimal(6, 2)
+  pointsPer60                 Decimal? @db.Decimal(6, 2)
+  penaltyDifferential         Int?
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  team   Team?  @relation(fields: [teamId], references: [id])
+
+  @@unique([playerId, season])
+  @@index([season])
+  @@index([teamId])
+  @@index([corsiForPct])
+  @@index([xGFPct])
+}
+
+model PlayerValueScore {
+  id                     String   @id @default(cuid())
+  playerId               String
+  season                 String
+  overallScore           Int
+  grade                  String?
+  positionGroup          String?
+  aavTier                String?
+  components             Json?
+  scoringComponent       Decimal? @db.Decimal(5, 2)
+  fiveOnFiveComponent    Decimal? @db.Decimal(5, 2)
+  specialTeamsComponent  Decimal? @db.Decimal(5, 2)
+  durabilityComponent    Decimal? @db.Decimal(5, 2)
+  efficiencyComponent    Decimal? @db.Decimal(5, 2)
+  warPerMillionComponent Decimal? @db.Decimal(5, 2)
+  ageCurveComponent      Decimal? @db.Decimal(5, 2)
+  estimatedWAR           Decimal? @db.Decimal(6, 2)
+  costPerPoint           Decimal? @db.Decimal(12, 2)
+  costPerGoal            Decimal? @db.Decimal(12, 2)
+  costPerWAR             Decimal? @db.Decimal(12, 2)
+  peerRank               Int?
+  leagueRank             Int?
+  calculatedAt           DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId, season, calculatedAt])
+  @@index([season, calculatedAt])
+  @@index([overallScore])
+  @@index([leagueRank])
+  @@index([positionGroup, season])
+  @@index([aavTier, season])
+}
+
+model GoalieStats {
+  id                    String   @id @default(cuid())
+  playerId              String
+  season                String
+  teamId                String?
+  gamesPlayed           Int      @default(0)
+  gamesStarted          Int      @default(0)
+  wins                  Int      @default(0)
+  losses                Int      @default(0)
+  otLosses              Int      @default(0)
+  savePercentage        Decimal? @db.Decimal(5, 4)
+  goalsAgainstAvg       Decimal? @db.Decimal(5, 3)
+  shotsAgainst          Int      @default(0)
+  saves                 Int      @default(0)
+  shutouts              Int      @default(0)
+  qualityStarts         Int?
+  qualityStartPct       Decimal? @db.Decimal(5, 2)
+  goalsAboveExpected    Decimal? @db.Decimal(8, 4)
+  highDangerSavePct     Decimal? @db.Decimal(5, 4)
+  mediumDangerSavePct   Decimal? @db.Decimal(5, 4)
+  lowDangerSavePct      Decimal? @db.Decimal(5, 4)
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  team   Team?  @relation(fields: [teamId], references: [id])
+
+  @@unique([playerId, season])
+  @@index([season])
+  @@index([teamId])
+  @@index([savePercentage])
+}
+
+model PlayerImpactStats {
+  id                        String   @id @default(cuid())
+  playerId                  String
+  season                    String
+  teamWinPctWithPlayer      Decimal? @db.Decimal(5, 3)
+  teamWinPctWithout         Decimal? @db.Decimal(5, 3)
+  winPctDifferential        Decimal? @db.Decimal(6, 3)
+  teamWinPctWhenScoring     Decimal? @db.Decimal(5, 3)
+  teamWinPctWhenGettingPoint Decimal? @db.Decimal(5, 3)
+  teamWinPctWhenMultiPoint  Decimal? @db.Decimal(5, 3)
+  teamRecordWithPlayer      String?
+  teamRecordWithout         String?
+  pointsPerGameInWins       Decimal? @db.Decimal(5, 3)
+  goalsPerGameInWins        Decimal? @db.Decimal(5, 3)
+  gameScore                 Decimal? @db.Decimal(6, 2)
+  highImpactGames           Int      @default(0)
+  clutchRating              Decimal? @db.Decimal(5, 2)
+  onIceGoalsForPer60        Decimal? @db.Decimal(6, 2)
+  onIceGoalsAgainstPer60    Decimal? @db.Decimal(6, 2)
+  onIceShootingPct          Decimal? @db.Decimal(5, 2)
+  onIceSavePct              Decimal? @db.Decimal(5, 3)
+  pdo                       Decimal? @db.Decimal(6, 3)
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, season])
+  @@index([season])
+  @@index([winPctDifferential])
+  @@index([clutchRating])
+}
+
+// ──────────────────────────────────────────────
+// System Models
+// ──────────────────────────────────────────────
+
+model JobRun {
+  id          String    @id @default(cuid())
+  jobName     String
+  status      String
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  durationMs  Int?
+  result      Json?
+  error       String?   @db.Text
+
+  @@index([jobName])
+  @@index([startedAt])
+}
+
+// ──────────────────────────────────────────────
+// User Feature Models
+// ──────────────────────────────────────────────
+
+model SavedReport {
+  id            String     @id @default(cuid())
+  userId        String
+  title         String
+  type          ReportType
+  configuration Json
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+}
+
+model TradeScenario {
+  id              String   @id @default(cuid())
+  userId          String
+  name            String
+  description     String?  @db.Text
+  teams           Json
+  playersInvolved Json
+  draftPicks      Json
+  capImpact       Json
+  notes           String?  @db.Text
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model WatchList {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  players WatchListPlayer[]
+
+  @@index([userId])
+}
+
+model WatchListPlayer {
+  id              String   @id @default(cuid())
+  watchListId     String
+  playerId        String
+  scoreWhenAdded  Int?
+  addedAt         DateTime @default(now())
+
+  watchList WatchList @relation(fields: [watchListId], references: [id], onDelete: Cascade)
+  player   Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([watchListId, playerId])
+  @@index([playerId])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String           @db.Text
+  link      String?
+  playerId  String?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  player Player? @relation(fields: [playerId], references: [id], onDelete: SetNull)
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@index([type])
+}
+
+// ──────────────────────────────────────────────
+// Team Intelligence Models
+// ──────────────────────────────────────────────
+
+enum TransactionType {
+  TRADE
+  SIGNING
+  WAIVER
+  RECALL
+}
+
+enum InjuryType {
+  DAY_TO_DAY
+  IR
+  LTIR
+  OUT
+}
+
+model Transaction {
+  id               String          @id @default(cuid())
+  teamId           String
+  type             TransactionType
+  description      String          @db.Text
+  playersInvolved  Json
+  date             DateTime
+  createdAt        DateTime        @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([date])
+  @@index([type])
+}
+
+model Injury {
+  id             String     @id @default(cuid())
+  playerId       String
+  teamId         String
+  type           InjuryType
+  description    String
+  date           DateTime
+  expectedReturn DateTime?
+  createdAt      DateTime   @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([playerId])
+  @@index([type])
+}
+
+model DraftPick {
+  id             String  @id @default(cuid())
+  teamId         String
+  originalTeamId String
+  year           Int
+  round          Int
+  condition      String?
+
+  team         Team @relation("OwnerTeam", fields: [teamId], references: [id], onDelete: Cascade)
+  originalTeam Team @relation("OriginalTeam", fields: [originalTeamId], references: [id], onDelete: Cascade)
+
+  @@unique([originalTeamId, year, round])
+  @@index([teamId])
+  @@index([year])
+}

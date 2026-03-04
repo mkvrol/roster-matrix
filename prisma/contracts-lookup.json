@@ -1,0 +1,4892 @@
+{
+  "lastUpdated": "2026-02-22",
+  "season": "20252026",
+  "teams": {
+    "ANA": [
+      {
+        "name": "Chris Kreider",
+        "capHit": 6500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Mikael Granlund",
+        "capHit": 7000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Strome",
+        "capHit": 5000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Killorn",
+        "capHit": 6250000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Ross Johnston",
+        "capHit": 1100000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Frank Vatrano",
+        "capHit": 4571189,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jansen Harkins",
+        "capHit": 787500,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Troy Terry",
+        "capHit": 7000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Poehling",
+        "capHit": 1900000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jeffrey Viel",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mason McTavish",
+        "capHit": 7000000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Cutter Gauthier",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Leo Carlsson",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Beckett Sennecke",
+        "capHit": 942500,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Radko Gudas",
+        "capHit": 4000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jacob Trouba",
+        "capHit": 8000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jackson LaCombe",
+        "capHit": 925000,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Drew Helleson",
+        "capHit": 1100000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Olen Zellweger",
+        "capHit": 844167,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Pavel Mintyukov",
+        "capHit": 918333,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Petr Mrazek",
+        "capHit": 4250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ville Husso",
+        "capHit": 2200000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Lukas Dostal",
+        "capHit": 6500000,
+        "endYear": 2030,
+        "status": "UFA"
+      }
+    ],
+    "BOS": [
+      {
+        "name": "Sean Kuraly",
+        "capHit": 1850000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Elias Lindholm",
+        "capHit": 7750000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "David Pastrnak",
+        "capHit": 11250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Viktor Arvidsson",
+        "capHit": 4000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Pavel Zacha",
+        "capHit": 4750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Michael Eyssimont",
+        "capHit": 1450000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Casey Mittelstadt",
+        "capHit": 5750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Morgan Geekie",
+        "capHit": 5500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Tanner Jeannot",
+        "capHit": 3400000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Mark Kastelic",
+        "capHit": 1566667,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Marat Khusnutdinov",
+        "capHit": 925000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Alex Steeves",
+        "capHit": 850000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Fraser Minten",
+        "capHit": 816666,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Hampus Lindholm",
+        "capHit": 6500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Nikita Zadorov",
+        "capHit": 5000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Charlie McAvoy",
+        "capHit": 9500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Andrew Peeke",
+        "capHit": 2750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Henri Jokiharju",
+        "capHit": 3000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jordan Harris",
+        "capHit": 825000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Jonathan Aspirot",
+        "capHit": 775000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Mason Lohrei",
+        "capHit": 3200000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Joonas Korpisalo",
+        "capHit": 3000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jeremy Swayman",
+        "capHit": 8250000,
+        "endYear": 2032,
+        "status": "UFA"
+      }
+    ],
+    "BUF": [
+      {
+        "name": "Jason Zucker",
+        "capHit": 4750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Tuch",
+        "capHit": 4750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jordan Greenway",
+        "capHit": 4000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Tage Thompson",
+        "capHit": 7142857,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Beck Malenstyn",
+        "capHit": 1350000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Joshua Norris",
+        "capHit": 7950000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan McLeod",
+        "capHit": 5000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Peyton Krebs",
+        "capHit": 1450000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Jack Quinn",
+        "capHit": 3375000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Joshua Dunne",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Justin Danforth",
+        "capHit": 1800000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Josh Doan",
+        "capHit": 925000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Tyson Kozak",
+        "capHit": 775000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Noah Östlund",
+        "capHit": 886666,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Jiri Kulich",
+        "capHit": 886666,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Zach Benson",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Conor Timmins",
+        "capHit": 2200000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jacob Bryson",
+        "capHit": 900000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Rasmus Dahlin",
+        "capHit": 11000000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Mattias Samuelsson",
+        "capHit": 4285714,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Michael Kesselring",
+        "capHit": 1400000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Bowen Byram",
+        "capHit": 6250000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Owen Power",
+        "capHit": 8350000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Lyon",
+        "capHit": 1500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Ukko-Pekka Luukkonen",
+        "capHit": 4750000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Colten Ellis",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "RFA"
+      }
+    ],
+    "CGY": [
+      {
+        "name": "Jonathan Huberdeau",
+        "capHit": 10500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Nazem Kadri",
+        "capHit": 7000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Matt Coronato",
+        "capHit": 6500000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Yegor Sharangovich",
+        "capHit": 5750000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Joel Farabee",
+        "capHit": 5000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Blake Coleman",
+        "capHit": 4900000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Mikael Backlund",
+        "capHit": 4500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Morgan Frost",
+        "capHit": 4375000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Connor Zary",
+        "capHit": 3775000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Ryan Lomberg",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Klapka",
+        "capHit": 1250000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Martin Pospisil",
+        "capHit": 1000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Matvei Gridin",
+        "capHit": 942500,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "John Beecher",
+        "capHit": 900000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Samuel Honzek",
+        "capHit": 886666,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "MacKenzie Weegar",
+        "capHit": 6250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Kevin Bahl",
+        "capHit": 5350000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Zach Whitecloud",
+        "capHit": 2750000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Joel Hanley",
+        "capHit": 1750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jake Bean",
+        "capHit": 1750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Brayden Pachal",
+        "capHit": 1187500,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Zayne Parekh",
+        "capHit": 942500,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Yan Kuznetsov",
+        "capHit": 812500,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Dustin Wolf",
+        "capHit": 850000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Devin Cooley",
+        "capHit": 775000,
+        "endYear": 2028,
+        "status": "UFA"
+      }
+    ],
+    "CAR": [
+      {
+        "name": "Jordan Staal",
+        "capHit": 2900000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Taylor Hall",
+        "capHit": 3166667,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Mark Jankowski",
+        "capHit": 800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jordan Martinook",
+        "capHit": 3050000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "William Carrier",
+        "capHit": 2000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Nikolaj Ehlers",
+        "capHit": 8500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Sebastian Aho",
+        "capHit": 9750000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Eric Robinson",
+        "capHit": 1700000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Andrei Svechnikov",
+        "capHit": 7750000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Jesperi Kotkaniemi",
+        "capHit": 4820000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Seth Jarvis",
+        "capHit": 7420087,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Logan Stankoven",
+        "capHit": 814167,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Jackson Blake",
+        "capHit": 905833,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Mike Reilly",
+        "capHit": 1100000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Shayne Gostisbehere",
+        "capHit": 3200000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jaccob Slavin",
+        "capHit": 6395955,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Jalen Chatfield",
+        "capHit": 3000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "K'Andre Miller",
+        "capHit": 7500000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Sean Walker",
+        "capHit": 3600000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Alexander Nikishin",
+        "capHit": 925000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Frederik Andersen",
+        "capHit": 2750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Pyotr Kochetkov",
+        "capHit": 2000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Brandon Bussi",
+        "capHit": 775000,
+        "endYear": 2029,
+        "status": "UFA"
+      }
+    ],
+    "CHI": [
+      {
+        "name": "Andre Burakovsky",
+        "capHit": 5500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Tyler Bertuzzi",
+        "capHit": 5500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Teuvo Teravainen",
+        "capHit": 5400000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Nick Foligno",
+        "capHit": 4500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jason Dickinson",
+        "capHit": 4250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ilya Mikheyev",
+        "capHit": 4037500,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Donato",
+        "capHit": 4000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Sam Lafferty",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Frank Nazar",
+        "capHit": 950000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Greene",
+        "capHit": 950000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Connor Bedard",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Oliver Moore",
+        "capHit": 941667,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Landon Slaggert",
+        "capHit": 900000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Colton Dach",
+        "capHit": 825000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Shea Weber",
+        "capHit": 7857143,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Ellis",
+        "capHit": 6250000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Vlasic",
+        "capHit": 4600000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Connor Murphy",
+        "capHit": 4400000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Wyatt Kaiser",
+        "capHit": 1700000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Matt Grzelcyk",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Artyom Levshunov",
+        "capHit": 975000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Sam Rinzel",
+        "capHit": 941667,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Kevin Korchinski",
+        "capHit": 918333,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Louis Crevier",
+        "capHit": 900000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Spencer Knight",
+        "capHit": 4500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Arvid Soderblom",
+        "capHit": 2750000,
+        "endYear": 2027,
+        "status": "UFA"
+      }
+    ],
+    "COL": [
+      {
+        "name": "Brock Nelson",
+        "capHit": 7500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Gabriel Landeskog",
+        "capHit": 7000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Nathan MacKinnon",
+        "capHit": 12600000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Artturi Lehkonen",
+        "capHit": 4500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Victor Olofsson",
+        "capHit": 1575000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ross Colton",
+        "capHit": 4000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Martin Necas",
+        "capHit": 6500000,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Jack Drury",
+        "capHit": 1725000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Valeri Nichushkin",
+        "capHit": 6125000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Logan O'Connor",
+        "capHit": 2500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Parker Kelly",
+        "capHit": 825000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Joel Kiviranta",
+        "capHit": 1250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Zakhar Bardakov",
+        "capHit": 867500,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Gavin Brindley",
+        "capHit": 950000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Brent Burns",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Josh Manson",
+        "capHit": 4500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Devon Toews",
+        "capHit": 7250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Samuel Girard",
+        "capHit": 5000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Cale Makar",
+        "capHit": 9000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Cale Makar",
+        "capHit": 12600000,
+        "endYear": 2035,
+        "status": "UFA",
+        "startYear": 2027
+      },
+      {
+        "name": "Sam Malinski",
+        "capHit": 1400000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Scott Wedgewood",
+        "capHit": 1500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "MacKenzie Blackwood",
+        "capHit": 5250000,
+        "endYear": 2030,
+        "status": "UFA"
+      }
+    ],
+    "CBJ": [
+      {
+        "name": "Sean Monahan",
+        "capHit": 5500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Charlie Coyle",
+        "capHit": 5250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mason Marchment",
+        "capHit": 4500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Dmitri Voronkov",
+        "capHit": 4175000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Kirill Marchenko",
+        "capHit": 3850000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Boone Jenner",
+        "capHit": 3750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mathieu Olivier",
+        "capHit": 3000000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Miles Wood",
+        "capHit": 2500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Danton Heinen",
+        "capHit": 2250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Cole Sillinger",
+        "capHit": 2250000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Kent Johnson",
+        "capHit": 1800000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Isac Lundestrom",
+        "capHit": 1300000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Fantilli",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Zach Werenski",
+        "capHit": 9583333,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Ivan Provorov",
+        "capHit": 8500000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Damon Severson",
+        "capHit": 6250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Dante Fabbro",
+        "capHit": 4125000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Erik Gudbranson",
+        "capHit": 4000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Yegor Zamula",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Jake Christiansen",
+        "capHit": 975000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Denton Mateychuk",
+        "capHit": 886666,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Brendan Smith",
+        "capHit": 800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Elvis Merzlikins",
+        "capHit": 5400000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jet Greaves",
+        "capHit": 812500,
+        "endYear": 2026,
+        "status": "RFA"
+      }
+    ],
+    "DAL": [
+      {
+        "name": "Mikko Rantanen",
+        "capHit": 12000000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Tyler Seguin",
+        "capHit": 9850000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Roope Hintz",
+        "capHit": 8450000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Wyatt Johnston",
+        "capHit": 8400000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Jason Robertson",
+        "capHit": 7750000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Matt Duchene",
+        "capHit": 4500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Sam Steel",
+        "capHit": 2100000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Radek Faksa",
+        "capHit": 2000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jamie Benn",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mavrik Bourque",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Justin Hryckowian",
+        "capHit": 870000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Oskar Back",
+        "capHit": 825000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Erne",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nathan Bastian",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Colin Blackwell",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Miro Heiskanen",
+        "capHit": 8450000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Esa Lindell",
+        "capHit": 5250000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Thomas Harley",
+        "capHit": 4000000,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Ilya Lyubushkin",
+        "capHit": 3250000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Nils Lundkvist",
+        "capHit": 1250000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Lian Bichsel",
+        "capHit": 918333,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Alexander Petrovic",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Kyle Capobianco",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jake Oettinger",
+        "capHit": 8250000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Casey DeSmith",
+        "capHit": 1000000,
+        "endYear": 2027,
+        "status": "UFA"
+      }
+    ],
+    "DET": [
+      {
+        "name": "Dylan Larkin",
+        "capHit": 8700000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Lucas Raymond",
+        "capHit": 8075000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Debrincat",
+        "capHit": 7875000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Andrew Copp",
+        "capHit": 5625000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "J.T. Compher",
+        "capHit": 5100000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Michael Rasmussen",
+        "capHit": 3200000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Patrick Kane",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mason Appleton",
+        "capHit": 2900000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Elmer Soderblom",
+        "capHit": 1125000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "James van Riemsdyk",
+        "capHit": 1750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Marco Kasper",
+        "capHit": 886666,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Emmitt Finnie",
+        "capHit": 821667,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Moritz Seider",
+        "capHit": 8550000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Ben Chiarot",
+        "capHit": 4750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ben Chiarot",
+        "capHit": 3000000,
+        "endYear": 2028,
+        "status": "UFA",
+        "startYear": 2026
+      },
+      {
+        "name": "Erik Gustafsson",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Albert Johansson",
+        "capHit": 1125000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Travis Hamonic",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Axel Sandin-Pellikka",
+        "capHit": 918333,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Simon Edvinsson",
+        "capHit": 894167,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Jacob Bernard-Docker",
+        "capHit": 875000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "John Gibson",
+        "capHit": 6400000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Cam Talbot",
+        "capHit": 2500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Sheldon Dries",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Dominik Shine",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "UFA"
+      }
+    ],
+    "EDM": [
+      {
+        "name": "Leon Draisaitl",
+        "capHit": 14000000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Connor McDavid",
+        "capHit": 12500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Connor McDavid",
+        "capHit": 16500000,
+        "endYear": 2030,
+        "status": "UFA",
+        "startYear": 2026
+      },
+      {
+        "name": "Zach Hyman",
+        "capHit": 5500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Nugent-Hopkins",
+        "capHit": 5125000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Trent Frederic",
+        "capHit": 3850000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Andrew Mangiapane",
+        "capHit": 3600000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Henrique",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jack Roslovic",
+        "capHit": 1500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mattias Janmark",
+        "capHit": 1450000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Kasperi Kapanen",
+        "capHit": 1300000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Vasily Podkolzin",
+        "capHit": 1000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Curtis Lazar",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Evan Bouchard",
+        "capHit": 10500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Darnell Nurse",
+        "capHit": 9250000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Mattias Ekholm",
+        "capHit": 6000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Jake Walman",
+        "capHit": 3400000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Ty Emberson",
+        "capHit": 1300000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Spencer Stastney",
+        "capHit": 825000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Alec Regula",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Tristan Jarry",
+        "capHit": 5375000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Connor Ingram",
+        "capHit": 1150000,
+        "endYear": 2026,
+        "status": "UFA"
+      }
+    ],
+    "FLA": [
+      {
+        "name": "Brad Marchand",
+        "capHit": 5250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Aleksander Barkov",
+        "capHit": 10000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Carter Verhaeghe",
+        "capHit": 7000000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Tomas Nosek",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Sam Reinhart",
+        "capHit": 8625000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Sam Bennett",
+        "capHit": 8000000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Evan Rodrigues",
+        "capHit": 3000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "A.J. Greer",
+        "capHit": 850000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Matthew Tkachuk",
+        "capHit": 9500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Luke Kunin",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jesper Boqvist",
+        "capHit": 1500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Eetu Luostarinen",
+        "capHit": 3000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jonah Gadjovich",
+        "capHit": 775000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Cole Schwindt",
+        "capHit": 825000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Anton Lundell",
+        "capHit": 5000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Mackie Samoskevich",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Sandis Vilmanis",
+        "capHit": 855000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Dmitry Kulikov",
+        "capHit": 1150000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jeff Petry",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Seth Jones",
+        "capHit": 7000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Aaron Ekblad",
+        "capHit": 6100000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Gustav Forsling",
+        "capHit": 5750000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Niko Mikkola",
+        "capHit": 2500000,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Tobias Bjornfot",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Donovan Sebrango",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Uvis Balinskis",
+        "capHit": 850000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Sergei Bobrovsky",
+        "capHit": 10000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Daniil Tarasov",
+        "capHit": 1050000,
+        "endYear": 2026,
+        "status": "UFA"
+      }
+    ],
+    "LAK": [
+      {
+        "name": "Corey Perry",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Anze Kopitar",
+        "capHit": 7000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Joel Armia",
+        "capHit": 2500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Kevin Fiala",
+        "capHit": 7875000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Adrian Kempe",
+        "capHit": 5500000,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Warren Foegele",
+        "capHit": 3500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Artemi Panarin",
+        "capHit": 5821429,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Trevor Moore",
+        "capHit": 4200000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Turcotte",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Quinton Byfield",
+        "capHit": 6250000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Laferriere",
+        "capHit": 4100000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Jeff Malott",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Samuel Helenius",
+        "capHit": 805833,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Taylor Ward",
+        "capHit": 775000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Andrei Kuzmenko",
+        "capHit": 4300000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Drew Doughty",
+        "capHit": 11000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Brian Dumoulin",
+        "capHit": 4000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Joel Edmundson",
+        "capHit": 3850000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Cody Ceci",
+        "capHit": 4500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Jacob Moverare",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mikey Anderson",
+        "capHit": 4125000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Brandt Clarke",
+        "capHit": 863334,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Darcy Kuemper",
+        "capHit": 5250000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Anton Forsberg",
+        "capHit": 2250000,
+        "endYear": 2027,
+        "status": "UFA"
+      }
+    ],
+    "MIN": [
+      {
+        "name": "Marcus Johansson",
+        "capHit": 800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Marcus Foligno",
+        "capHit": 4000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Vladimir Tarasenko",
+        "capHit": 4750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mats Zuccarello",
+        "capHit": 4125000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Vinnie Hinostroza",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Hartman",
+        "capHit": 4000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Joel Eriksson Ek",
+        "capHit": 5250000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Yakov Trenin",
+        "capHit": 3500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Kirill Kaprizov",
+        "capHit": 9000000,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Boris Katchouk",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nico Sturm",
+        "capHit": 2000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Matt Boldy",
+        "capHit": 7000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Danila Yurov",
+        "capHit": 950000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Zach Bogosian",
+        "capHit": 1250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jared Spurgeon",
+        "capHit": 7575000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jonas Brodin",
+        "capHit": 6000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jacob Middleton",
+        "capHit": 4350000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Quinn Hughes",
+        "capHit": 7850000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Ben Gleason",
+        "capHit": 800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Brock Faber",
+        "capHit": 8500000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Daemon Hunt",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "David Spacek",
+        "capHit": 862500,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Filip Gustavsson",
+        "capHit": 3750000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Jesper Wallstedt",
+        "capHit": 2200000,
+        "endYear": 2027,
+        "status": "RFA"
+      }
+    ],
+    "MTL": [
+      {
+        "name": "Brendan Gallagher",
+        "capHit": 6500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Phillip Danault",
+        "capHit": 5500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Josh Anderson",
+        "capHit": 5500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jake Evans",
+        "capHit": 2850000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Patrik Laine",
+        "capHit": 8700000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nick Suzuki",
+        "capHit": 7875000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Alexandre Texier",
+        "capHit": 1000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Joseph Veleno",
+        "capHit": 900000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Kirby Dach",
+        "capHit": 3362500,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Cole Caufield",
+        "capHit": 7850000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Newhook",
+        "capHit": 2900000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Zack Bolduc",
+        "capHit": 863334,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Oliver Kapanen",
+        "capHit": 925000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Juraj Slafkovsky",
+        "capHit": 7600000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Ivan Demidov",
+        "capHit": 940833,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Mike Matheson",
+        "capHit": 4875000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Alexandre Carrier",
+        "capHit": 3750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Noah Dobson",
+        "capHit": 9500000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Jayden Struble",
+        "capHit": 1412500,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Kaiden Guhle",
+        "capHit": 5550000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Arber Xhekaj",
+        "capHit": 1300000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Lane Hutson",
+        "capHit": 925000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Lane Hutson",
+        "capHit": 8250000,
+        "endYear": 2034,
+        "status": "UFA",
+        "startYear": 2026
+      },
+      {
+        "name": "Sam Montembeault",
+        "capHit": 3150000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jakub Dobes",
+        "capHit": 965000,
+        "endYear": 2027,
+        "status": "RFA"
+      }
+    ],
+    "NSH": [
+      {
+        "name": "Steven Stamkos",
+        "capHit": 8000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan O'Reilly",
+        "capHit": 4500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Erik Haula",
+        "capHit": 3150000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jonathan Marchessault",
+        "capHit": 5500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Filip Forsberg",
+        "capHit": 8500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Michael McCarron",
+        "capHit": 900000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Michael Bunting",
+        "capHit": 4500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Tyson Jost",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Cole Smith",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ozzy Wiesblatt",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Luke Evangelista",
+        "capHit": 3000000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Roman Josi",
+        "capHit": 9059000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Brady Skjei",
+        "capHit": 7000000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Nicolas Hague",
+        "capHit": 5500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Nicklaus Perbix",
+        "capHit": 2750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Justin Barron",
+        "capHit": 1150000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Adam Wilsby",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Nick Blankenburg",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Juuse Saros",
+        "capHit": 7740000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Justus Annunen",
+        "capHit": 837500,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Matthew Murray",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "UFA"
+      }
+    ],
+    "NJD": [
+      {
+        "name": "Evgenii Dadonov",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nick Bjugstad",
+        "capHit": 1750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Stefan Noesen",
+        "capHit": 2750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Connor Brown",
+        "capHit": 3000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Luke Glendening",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Timo Meier",
+        "capHit": 8800000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Jesper Bratt",
+        "capHit": 7875000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Zack MacEwen",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nico Hischier",
+        "capHit": 7250000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Cody Glass",
+        "capHit": 2500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Paul Cotter",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Jack Hughes",
+        "capHit": 8000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Arseny Gritsyuk",
+        "capHit": 925000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Dawson Mercer",
+        "capHit": 4000000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Lenni Hameenaho",
+        "capHit": 950000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Dylan Wendt",
+        "capHit": 870000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Maxim Tsyplakov",
+        "capHit": 2250000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Brenden Dillon",
+        "capHit": 4000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Dougie Hamilton",
+        "capHit": 9000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Brett Pesce",
+        "capHit": 5500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Jonas Siegenthaler",
+        "capHit": 3400000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Colton White",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Dennis Cholowski",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Johnathan Kovacevic",
+        "capHit": 4000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Luke Hughes",
+        "capHit": 9000000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Simon Nemec",
+        "capHit": 918333,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Jacob Markstrom",
+        "capHit": 4125000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jake Allen",
+        "capHit": 1800000,
+        "endYear": 2030,
+        "status": "UFA"
+      }
+    ],
+    "NYI": [
+      {
+        "name": "Kyle Palmieri",
+        "capHit": 4750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Casey Cizikas",
+        "capHit": 2500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Anders Lee",
+        "capHit": 7000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jean-Gabriel Pageau",
+        "capHit": 5000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ondrej Palat",
+        "capHit": 6000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Anthony Duclair",
+        "capHit": 3500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jonathan Drouin",
+        "capHit": 4000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Bo Horvat",
+        "capHit": 8500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Mathew Barzal",
+        "capHit": 9150000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Pierre Engvall",
+        "capHit": 3000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Kyle MacLean",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Simon Holmstrom",
+        "capHit": 3625000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Emil Heineman",
+        "capHit": 1100000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Calum Ritchie",
+        "capHit": 918333,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Marc Gatcomb",
+        "capHit": 900000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Maxim Shabanov",
+        "capHit": 975000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Scott Mayfield",
+        "capHit": 3500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Pelech",
+        "capHit": 5750000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Pulock",
+        "capHit": 6150000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Carson Soucy",
+        "capHit": 3250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Tony DeAngelo",
+        "capHit": 1750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Boqvist",
+        "capHit": 850000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Alexander Romanov",
+        "capHit": 6250000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Matthew Schaefer",
+        "capHit": 975000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Semyon Varlamov",
+        "capHit": 2750000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Ilya Sorokin",
+        "capHit": 8250000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "David Rittich",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      }
+    ],
+    "NYR": [
+      {
+        "name": "Sam Carrick",
+        "capHit": 1000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Mika Zibanejad",
+        "capHit": 8500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Vincent Trocheck",
+        "capHit": 5625000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "J.T. Miller",
+        "capHit": 8000000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Jonny Brodzinski",
+        "capHit": 787500,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Conor Sheary",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Taylor Raddysh",
+        "capHit": 1500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Edstrom",
+        "capHit": 975000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Alexis Lafreniere",
+        "capHit": 7450000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Brendan Brisson",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Will Cuylle",
+        "capHit": 3900000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Brett Berard",
+        "capHit": 867500,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Matt Rempe",
+        "capHit": 975000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Brennan Othmann",
+        "capHit": 863333,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Noah Laba",
+        "capHit": 870000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Gabe Perreault",
+        "capHit": 941667,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "William Borgen",
+        "capHit": 4100000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Vladislav Gavrikov",
+        "capHit": 7000000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Fox",
+        "capHit": 9500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Urho Vaakanainen",
+        "capHit": 1550000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Matthew Robertson",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Braden Schneider",
+        "capHit": 2200000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Vincent Iorio",
+        "capHit": 814167,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Scott Morrow",
+        "capHit": 916667,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Jonathan Quick",
+        "capHit": 1550000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Igor Shesterkin",
+        "capHit": 11500000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Hugo Ollas",
+        "capHit": 855000,
+        "endYear": 2026,
+        "status": "RFA"
+      }
+    ],
+    "OTT": [
+      {
+        "name": "Claude Giroux",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "David Perron",
+        "capHit": 4000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Lars Eller",
+        "capHit": 1250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nick Cousins",
+        "capHit": 825000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Kurtis MacDermid",
+        "capHit": 1150000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Michael Amadio",
+        "capHit": 2600000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Fabian Zetterlund",
+        "capHit": 4275000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Drake Batherson",
+        "capHit": 4975000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Brady Tkachuk",
+        "capHit": 8205714,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Dylan Cozens",
+        "capHit": 7100000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Shane Pinto",
+        "capHit": 3750000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Ridly Greig",
+        "capHit": 3250000,
+        "endYear": 2029,
+        "status": "RFA"
+      },
+      {
+        "name": "Tim Stutzle",
+        "capHit": 8350000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Nick Jensen",
+        "capHit": 4050000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Thomas Chabot",
+        "capHit": 8000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jordan Spence",
+        "capHit": 1500000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Artyom Zub",
+        "capHit": 4600000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jake Sanderson",
+        "capHit": 8050000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Tyler Kleven",
+        "capHit": 1600000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Nikolas Matinpalo",
+        "capHit": 875000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "James Reimer",
+        "capHit": 850000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Linus Ullmark",
+        "capHit": 8250000,
+        "endYear": 2029,
+        "status": "UFA"
+      }
+    ],
+    "PHI": [
+      {
+        "name": "Nicolas Deslauriers",
+        "capHit": 1750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Sean Couturier",
+        "capHit": 7750000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Christian Dvorak",
+        "capHit": 5400000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Garnet Hathaway",
+        "capHit": 2400000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Travis Konecny",
+        "capHit": 8750000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Carl Grundstrom",
+        "capHit": 1800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Rodrigo Abols",
+        "capHit": 800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Owen Tippett",
+        "capHit": 6200000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Noah Cates",
+        "capHit": 4000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Trevor Zegras",
+        "capHit": 5750000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Bobby Brink",
+        "capHit": 1500000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Tyson Foerster",
+        "capHit": 3750000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Nikita Grebenkin",
+        "capHit": 875000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Denver Barkey",
+        "capHit": 863333,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Matvei Michkov",
+        "capHit": 950000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Nick Seeler",
+        "capHit": 2700000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Rasmus Ristolainen",
+        "capHit": 5100000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Travis Sanheim",
+        "capHit": 6250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Noah Juulsen",
+        "capHit": 900000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Ginning",
+        "capHit": 787500,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Cameron York",
+        "capHit": 5150000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Jamie Drysdale",
+        "capHit": 2300000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Emil Andrae",
+        "capHit": 903333,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Dan Vladar",
+        "capHit": 3350000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Samuel Ersson",
+        "capHit": 1450000,
+        "endYear": 2026,
+        "status": "RFA"
+      }
+    ],
+    "PIT": [
+      {
+        "name": "Sidney Crosby",
+        "capHit": 8700000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Evgeni Malkin",
+        "capHit": 6100000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Kevin Hayes",
+        "capHit": 3571429,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Bryan Rust",
+        "capHit": 5125000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Rickard Rakell",
+        "capHit": 5000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Anthony Mantha",
+        "capHit": 2500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Thomas Novak",
+        "capHit": 3500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Noel Acciari",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Filip Hallander",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Connor Dewar",
+        "capHit": 1100000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Justin Brazeau",
+        "capHit": 1500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Blake Lizotte",
+        "capHit": 1850000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Yegor Chinakhov",
+        "capHit": 2100000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Benjamin Kindel",
+        "capHit": 975000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Kris Letang",
+        "capHit": 6100000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Erik Karlsson",
+        "capHit": 10000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Brett Kulak",
+        "capHit": 2750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Graves",
+        "capHit": 4500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Parker Wotherspoon",
+        "capHit": 1000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Caleb Jones",
+        "capHit": 900000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Shea",
+        "capHit": 900000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jack St. Ivany",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Connor Clifton",
+        "capHit": 3333333,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ilya Solovyov",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Stuart Skinner",
+        "capHit": 2600000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Arturs Silovs",
+        "capHit": 850000,
+        "endYear": 2026,
+        "status": "RFA"
+      }
+    ],
+    "SJS": [
+      {
+        "name": "Ryan Reaves",
+        "capHit": 1350000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Logan Couture",
+        "capHit": 8000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Tyler Toffoli",
+        "capHit": 6000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Alexander Wennberg",
+        "capHit": 5000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Barclay Goodrow",
+        "capHit": 3641667,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Gaudette",
+        "capHit": 2000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Ty Dellandrea",
+        "capHit": 1300000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Philipp Kurashev",
+        "capHit": 1200000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Kiefer Sherwood",
+        "capHit": 1500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Zack Ostapchuk",
+        "capHit": 825000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "William Eklund",
+        "capHit": 863333,
+        "endYear": 2029,
+        "status": "RFA"
+      },
+      {
+        "name": "Pavol Regenda",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Filip Bystedt",
+        "capHit": 918333,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Will Smith",
+        "capHit": 950000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Collin Graf",
+        "capHit": 941667,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Macklin Celebrini",
+        "capHit": 975000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Michael Misa",
+        "capHit": 975000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Nick Leddy",
+        "capHit": 4000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Dmitry Orlov",
+        "capHit": 6500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "John Klingberg",
+        "capHit": 4000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Vincent Desharnais",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Timothy Liljegren",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mario Ferraro",
+        "capHit": 3250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Shakir Mukhamadullin",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Sam Dickinson",
+        "capHit": 942500,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Carey Price",
+        "capHit": 10500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Nedeljkovic",
+        "capHit": 2500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Yaroslav Askarov",
+        "capHit": 2000000,
+        "endYear": 2027,
+        "status": "RFA"
+      }
+    ],
+    "SEA": [
+      {
+        "name": "Jordan Eberle",
+        "capHit": 4750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jaden Schwartz",
+        "capHit": 5500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Chandler Stephenson",
+        "capHit": 6250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Frederick Gaudreau",
+        "capHit": 2100000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jared McCann",
+        "capHit": 5000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Eeli Tolvanen",
+        "capHit": 3475000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Kaapo Kakko",
+        "capHit": 4525000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Winterton",
+        "capHit": 828333,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Matthew Beniers",
+        "capHit": 7142857,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Jacob Melanson",
+        "capHit": 826111,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Tye Kartye",
+        "capHit": 1250000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Ben Meyers",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Shane Wright",
+        "capHit": 886666,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Berkly Catton",
+        "capHit": 942500,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Adam Larsson",
+        "capHit": 5250000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Jamie Oleksiak",
+        "capHit": 4600000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Brandon Montour",
+        "capHit": 7142857,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Vince Dunn",
+        "capHit": 7350000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Lindgren",
+        "capHit": 4500000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Josh Mahura",
+        "capHit": 907500,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Cale Fleury",
+        "capHit": 890000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryker Evans",
+        "capHit": 2050000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Philipp Grubauer",
+        "capHit": 5900000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Matt Murray",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Joey Daccord",
+        "capHit": 5000000,
+        "endYear": 2030,
+        "status": "UFA"
+      }
+    ],
+    "STL": [
+      {
+        "name": "Brayden Schenn",
+        "capHit": 6500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Oskar Sundqvist",
+        "capHit": 1500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Pavel Buchnevich",
+        "capHit": 8000000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Nathan Walker",
+        "capHit": 775000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Robby Fabbri",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mathieu Joseph",
+        "capHit": 2950000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jordan Kyrou",
+        "capHit": 8125000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Robert Thomas",
+        "capHit": 8125000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Alexei Toropchenko",
+        "capHit": 1700000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Pius Suter",
+        "capHit": 4125000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jonatan Berggren",
+        "capHit": 1825000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Dylan Holloway",
+        "capHit": 2290457,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Jake Neighbours",
+        "capHit": 3750000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Jack Finley",
+        "capHit": 775000,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Jimmy Snuggerud",
+        "capHit": 950000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Dalibor Dvorsky",
+        "capHit": 886666,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Cam Fowler",
+        "capHit": 4000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Justin Faulk",
+        "capHit": 6500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Torey Krug",
+        "capHit": 6500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Colton Parayko",
+        "capHit": 6500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Tyler Tucker",
+        "capHit": 925000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Philip Broberg",
+        "capHit": 4580917,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Matthew Kessel",
+        "capHit": 800000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Logan Mailloux",
+        "capHit": 875000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Jordan Binnington",
+        "capHit": 6000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Joel Hofer",
+        "capHit": 3400000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Georgii Romanov",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      }
+    ],
+    "TBL": [
+      {
+        "name": "Nikita Kucherov",
+        "capHit": 9500000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Zemgus Girgensons",
+        "capHit": 850000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Jake Guentzel",
+        "capHit": 9000000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Oliver Bjorkstrand",
+        "capHit": 5400000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nick Paul",
+        "capHit": 3150000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Scott Sabourin",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Brayden Point",
+        "capHit": 9500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Yanni Gourde",
+        "capHit": 2333333,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Anthony Cirelli",
+        "capHit": 6250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Brandon Hagel",
+        "capHit": 6500000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Curtis Douglas",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Pontus Holmberg",
+        "capHit": 1550000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Gage Goncalves",
+        "capHit": 1200000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Dominic James",
+        "capHit": 910000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Victor Hedman",
+        "capHit": 8000000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan McDonagh",
+        "capHit": 6750000,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Darren Raddysh",
+        "capHit": 975000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Erik Cernak",
+        "capHit": 5200000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Maxwell Crozier",
+        "capHit": 775000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Charle-Edouard D'Astous",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Janis Jerome Moser",
+        "capHit": 3375000,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Emil Lilleberg",
+        "capHit": 800000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Declan Carlile",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Andrei Vasilevskiy",
+        "capHit": 9500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Jonas Johansson",
+        "capHit": 1250000,
+        "endYear": 2027,
+        "status": "UFA"
+      }
+    ],
+    "TOR": [
+      {
+        "name": "John Tavares",
+        "capHit": 4389280,
+        "endYear": 2029,
+        "status": "UFA"
+      },
+      {
+        "name": "Calle Jarnkrok",
+        "capHit": 2100000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Scott Laughton",
+        "capHit": 1500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Max Domi",
+        "capHit": 3750000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "William Nylander",
+        "capHit": 11500000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Dakota Joshua",
+        "capHit": 3250000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Nicolas Roy",
+        "capHit": 3000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Steven Lorentz",
+        "capHit": 1350000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Auston Matthews",
+        "capHit": 13250000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Nicholas Robertson",
+        "capHit": 1825000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Matias Maccelli",
+        "capHit": 3425000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Matthew Knies",
+        "capHit": 7750000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Bobby McMann",
+        "capHit": 1350000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Easton Cowan",
+        "capHit": 873500,
+        "endYear": 2028,
+        "status": "RFA"
+      },
+      {
+        "name": "Oliver Ekman-Larsson",
+        "capHit": 3500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Chris Tanev",
+        "capHit": 4500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Morgan Rielly",
+        "capHit": 7500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Jake McCabe",
+        "capHit": 4513102,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Brandon Carlo",
+        "capHit": 3485000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Philippe Myers",
+        "capHit": 850000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Troy Stecher",
+        "capHit": 787500,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Simon Benoit",
+        "capHit": 1350000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Anthony Stolarz",
+        "capHit": 2500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Joseph Woll",
+        "capHit": 3666667,
+        "endYear": 2028,
+        "status": "UFA"
+      }
+    ],
+    "UTA": [
+      {
+        "name": "Alexander Kerfoot",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Liam O'Brien",
+        "capHit": 1000000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Nick Schmaltz",
+        "capHit": 5850000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Lawson Crouse",
+        "capHit": 4300000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Kevin Stenlund",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Brandon Tanev",
+        "capHit": 2500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Clayton Keller",
+        "capHit": 7150000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Michael Carcone",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Kailer Yamamoto",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Barrett Hayton",
+        "capHit": 2650000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Jack McBain",
+        "capHit": 4250000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "John-Jason Peterka",
+        "capHit": 7700000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Ben McCartney",
+        "capHit": 775000,
+        "endYear": 2027,
+        "status": "RFA"
+      },
+      {
+        "name": "Dylan Guenther",
+        "capHit": 7142875,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Logan Cooley",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Ian Cole",
+        "capHit": 2800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Kevin Connauton",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Olli Maatta",
+        "capHit": 3500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Nate Schmidt",
+        "capHit": 3500000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "John Marino",
+        "capHit": 4400000,
+        "endYear": 2027,
+        "status": "UFA"
+      },
+      {
+        "name": "Mikhail Sergachev",
+        "capHit": 8500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Nick DeSimone",
+        "capHit": 800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Scott Perunovich",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Sean Durzi",
+        "capHit": 6000000,
+        "endYear": 2028,
+        "status": "UFA"
+      },
+      {
+        "name": "Vitek Vanecek",
+        "capHit": 1500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Karel Vejmelka",
+        "capHit": 4750000,
+        "endYear": 2030,
+        "status": "UFA"
+      }
+    ],
+    "VAN": [
+      {
+        "name": "Evander Kane",
+        "capHit": 5125000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Teddy Blueger",
+        "capHit": 1800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Conor Garland",
+        "capHit": 4950000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Jake DeBrusk",
+        "capHit": 5500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Brock Boeser",
+        "capHit": 7250000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "David Kampf",
+        "capHit": 1100000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Elias Pettersson",
+        "capHit": 11600000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Filip Chytil",
+        "capHit": 4437500,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Linus Karlsson",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nils Hoglander",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Drew O'Connor",
+        "capHit": 2500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Marco Rossi",
+        "capHit": 5000000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Aatu Räty",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Liam Öhgren",
+        "capHit": 886666,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Max Sasson",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Tyler Myers",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Derek Forbort",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Marcus Pettersson",
+        "capHit": 5500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Filip Hronek",
+        "capHit": 7250000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Pierre-Olivier Joseph",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Elias Pettersson",
+        "capHit": 838333,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Tom Willander",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Zeev Buium",
+        "capHit": 966667,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Thatcher Demko",
+        "capHit": 5000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jiri Patera",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Kevin Lankinen",
+        "capHit": 4500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Aku Koskenvuo",
+        "capHit": 850000,
+        "endYear": 2026,
+        "status": "RFA"
+      }
+    ],
+    "VGK": [
+      {
+        "name": "Reilly Smith",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mark Stone",
+        "capHit": 9500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Brandon Saad",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "William Karlsson",
+        "capHit": 5900000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Tomas Hertl",
+        "capHit": 6750000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Colton Sissons",
+        "capHit": 1428572,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ivan Barbashev",
+        "capHit": 5000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jack Eichel",
+        "capHit": 10000000,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Mitchell Marner",
+        "capHit": 12000000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Keegan Kolesar",
+        "capHit": 2500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Brett Howden",
+        "capHit": 2500000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Jonas Rondbjerg",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Pavel Dorofeyev",
+        "capHit": 1835000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Alexander Holtz",
+        "capHit": 839725,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Cole Reinhardt",
+        "capHit": 812500,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Braeden Bowman",
+        "capHit": 837500,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Alex Pietrangelo",
+        "capHit": 8800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Brayden McNabb",
+        "capHit": 3650000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ben Hutton",
+        "capHit": 975000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Shea Theodore",
+        "capHit": 7425000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Noah Hanifin",
+        "capHit": 7350000,
+        "endYear": 2032,
+        "status": "UFA"
+      },
+      {
+        "name": "Jeremy Lauzon",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Rasmus Andersson",
+        "capHit": 2275000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Kaedan Korczak",
+        "capHit": 825000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Adin Hill",
+        "capHit": 6250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Carter Hart",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Akira Schmid",
+        "capHit": 875000,
+        "endYear": 2026,
+        "status": "RFA"
+      }
+    ],
+    "WPG": [
+      {
+        "name": "Jonathan Toews",
+        "capHit": 2000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nino Niederreiter",
+        "capHit": 4000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Gustav Nyquist",
+        "capHit": 3250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Mark Scheifele",
+        "capHit": 8500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Vladislav Namestnikov",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Adam Lowry",
+        "capHit": 3250000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Tanner Pearson",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Kyle Connor",
+        "capHit": 7142857,
+        "endYear": 2034,
+        "status": "UFA"
+      },
+      {
+        "name": "Alex Iafallo",
+        "capHit": 3666666,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Gabriel Vilardi",
+        "capHit": 7500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Morgan Barron",
+        "capHit": 1850000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Cole Koepke",
+        "capHit": 1000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Cole Perfetti",
+        "capHit": 3250000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Walker Duehr",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Luke Schenn",
+        "capHit": 2750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Dylan Demelo",
+        "capHit": 4900000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Colin Miller",
+        "capHit": 1500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Josh Morrissey",
+        "capHit": 6250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Haydn Fleury",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Logan Stanley",
+        "capHit": 1250000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Neal Pionk",
+        "capHit": 7000000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Dylan Samberg",
+        "capHit": 5750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ville Heinola",
+        "capHit": 800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Elias Salomonsson",
+        "capHit": 815000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Connor Hellebuyck",
+        "capHit": 8500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Eric Comrie",
+        "capHit": 825000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Domenic DiVincentiis",
+        "capHit": 830556,
+        "endYear": 2026,
+        "status": "RFA"
+      }
+    ],
+    "WSH": [
+      {
+        "name": "Alex Ovechkin",
+        "capHit": 9500000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Pierre-Luc Dubois",
+        "capHit": 8500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Tom Wilson",
+        "capHit": 6500000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Dylan Strome",
+        "capHit": 5000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Aliaksei Protas",
+        "capHit": 3375000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Nic Dowd",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Anthony Beauvillier",
+        "capHit": 2750000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Connor McMichael",
+        "capHit": 2100000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Sonny Milano",
+        "capHit": 1900000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Brandon Duhaime",
+        "capHit": 1850000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Ryan Leonard",
+        "capHit": 950000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Hendrix Lapierre",
+        "capHit": 850000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Justin Sourdif",
+        "capHit": 825000,
+        "endYear": 2026,
+        "status": "RFA"
+      },
+      {
+        "name": "Ethen Frank",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Jakob Chychrun",
+        "capHit": 9000000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "John Carlson",
+        "capHit": 8000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Matt Roy",
+        "capHit": 5750000,
+        "endYear": 2030,
+        "status": "UFA"
+      },
+      {
+        "name": "Rasmus Sandin",
+        "capHit": 4600000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Trevor van Riemsdyk",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Martin Fehervary",
+        "capHit": 2675000,
+        "endYear": 2033,
+        "status": "UFA"
+      },
+      {
+        "name": "Declan Chisholm",
+        "capHit": 1600000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Dylan McIlrath",
+        "capHit": 800000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Logan Thompson",
+        "capHit": 5850000,
+        "endYear": 2031,
+        "status": "UFA"
+      },
+      {
+        "name": "Charlie Lindgren",
+        "capHit": 3000000,
+        "endYear": 2026,
+        "status": "UFA"
+      },
+      {
+        "name": "Garin Bjorklund",
+        "capHit": 775000,
+        "endYear": 2026,
+        "status": "RFA"
+      }
+    ]
+  }
+}

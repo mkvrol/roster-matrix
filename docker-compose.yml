@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: roster-matrix-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - roster-matrix-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: roster-matrix-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: contract_intel
+      POSTGRES_PASSWORD: contract_intel_dev
+      POSTGRES_DB: contract_intel
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U contract_intel"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - roster-matrix-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: roster-matrix-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - roster-matrix-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  roster-matrix-network:
+    driver: bridge

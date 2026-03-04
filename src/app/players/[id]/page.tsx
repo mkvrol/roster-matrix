@@ -1858,7 +1858,14 @@ function ImpactTab({ profile }: { profile: Profile }) {
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-data-sm text-text-secondary">Clutch Rating</span>
-                  <span className="font-mono text-lg font-bold text-text-primary">
+                  <span className={cn(
+                    "font-mono text-lg font-bold",
+                    imp.clutchRating >= 80 ? "text-success"
+                      : imp.clutchRating >= 60 ? "text-[#3b82f6]"
+                        : imp.clutchRating >= 40 ? "text-warning"
+                          : imp.clutchRating >= 20 ? "text-[#f97316]"
+                            : "text-danger",
+                  )}>
                     {imp.clutchRating.toFixed(0)}
                   </span>
                 </div>
@@ -1866,18 +1873,36 @@ function ImpactTab({ profile }: { profile: Profile }) {
                   <div
                     className={cn(
                       "h-full rounded-full transition-all",
-                      imp.clutchRating >= 60
+                      imp.clutchRating >= 80
                         ? "bg-success"
-                        : imp.clutchRating >= 35
-                          ? "bg-warning"
-                          : "bg-danger",
+                        : imp.clutchRating >= 60
+                          ? "bg-[#3b82f6]"
+                          : imp.clutchRating >= 40
+                            ? "bg-warning"
+                            : imp.clutchRating >= 20
+                              ? "bg-[#f97316]"
+                              : "bg-danger",
                     )}
                     style={{ width: `${Math.min(100, imp.clutchRating)}%` }}
                   />
                 </div>
-                <p className="mt-1 text-data-xs text-text-muted">
-                  Based on game-winning goals, overtime goals, and high-impact performances
-                </p>
+                {/* Clutch Rating Legend */}
+                <div className="mt-3 space-y-1">
+                  {[
+                    { range: "80–100", label: "Elite Clutch", color: "bg-success", textColor: "text-success", desc: "Consistently delivers in the biggest moments" },
+                    { range: "60–79", label: "Clutch Performer", color: "bg-[#3b82f6]", textColor: "text-[#3b82f6]", desc: "Reliable when it matters most" },
+                    { range: "40–59", label: "Average", color: "bg-warning", textColor: "text-warning", desc: "Typical performance in pressure situations" },
+                    { range: "20–39", label: "Below Average", color: "bg-[#f97316]", textColor: "text-[#f97316]", desc: "Tends to go quiet in big moments" },
+                    { range: "0–19", label: "Non-Factor", color: "bg-danger", textColor: "text-danger", desc: "Rarely impacts close/important games" },
+                  ].map((tier) => (
+                    <div key={tier.range} className="flex items-center gap-2">
+                      <div className={cn("h-2 w-2 shrink-0 rounded-full", tier.color)} />
+                      <span className={cn("w-12 shrink-0 font-mono text-[10px]", tier.textColor)}>{tier.range}</span>
+                      <span className="text-[10px] font-medium text-text-secondary">{tier.label}</span>
+                      <span className="hidden text-[10px] text-text-muted sm:inline">— {tier.desc}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {!isGoalie && imp.highImpactGames != null && (

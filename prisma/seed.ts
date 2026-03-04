@@ -425,12 +425,13 @@ async function main() {
     }
   }
 
-  // ── 7b. Sync impact stats from NHL API ──
-  console.log("\n  Syncing impact stats from NHL API (game-by-game data)...");
-  const impactResult = await syncImpactStats(prisma);
+  // ── 7b. Sync impact stats from NHL API (5 seasons) ──
+  const impactSeasons = ["20252026", "20242025", "20232024", "20222023", "20212022"];
+  console.log(`\n  Syncing impact stats from NHL API (${impactSeasons.length} seasons: ${impactSeasons.join(", ")})...`);
+  const impactResult = await syncImpactStats(prisma, { seasons: impactSeasons });
   console.log(`  Impact sync complete:`);
   console.log(`    Players processed:    ${impactResult.playersProcessed}`);
-  console.log(`    Stats created:        ${impactResult.statsCreated}`);
+  console.log(`    Stats created:        ${impactResult.statsCreated} (across ${impactSeasons.length} seasons)`);
   if (impactResult.errors.length > 0) {
     console.log(`    Errors:               ${impactResult.errors.length}`);
     for (const err of impactResult.errors.slice(0, 5)) {

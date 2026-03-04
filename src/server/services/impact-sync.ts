@@ -117,6 +117,8 @@ function calculateGameScore(
 
 // ── Clutch rating calculation ──
 // Derived from GWG, OT goals, and high-impact production
+// Calibrated: Elite clutch 80-100, Clutch performer 60-79, Average 40-59,
+// Below average 20-39, Non-factor 0-19
 function calculateClutchRating(
   gameWinningGoals: number,
   overtimeGoals: number,
@@ -129,14 +131,18 @@ function calculateClutchRating(
   const otgPer82 = (overtimeGoals / gp) * 82;
   const hiPer82 = (highImpactGames / gp) * 82;
 
-  // GWG: league avg ~4/season, elite ~10+
-  const gwgScore = Math.min(100, (gwgPer82 / 10) * 70);
-  // OT goals: rare, high value
-  const otgScore = Math.min(100, otgPer82 * 25);
-  // High-impact games
-  const hiScore = Math.min(100, (hiPer82 / 20) * 60);
+  // GWG: league avg ~4-5/season, elite ~8-10+
+  const gwgScore = Math.min(100, (gwgPer82 / 7) * 100);
+  // OT goals: rare, high value — 2-3/season is elite
+  const otgScore = Math.min(100, otgPer82 * 35);
+  // High-impact games (3+ pts or GWG) — 12+/season is elite
+  const hiScore = Math.min(100, (hiPer82 / 12) * 100);
+  // Base contribution for playing — rewards durability/availability
+  const baseContribution = Math.min(15, (gp / 82) * 15);
 
-  return Math.round(gwgScore * 0.45 + otgScore * 0.25 + hiScore * 0.30);
+  return Math.min(100, Math.round(
+    gwgScore * 0.35 + otgScore * 0.20 + hiScore * 0.30 + baseContribution,
+  ));
 }
 
 // ── Fetch team schedule to determine games player missed ──
@@ -356,31 +362,31 @@ function processGoalieGameLog(
   };
 }
 
+// ── Default seasons to sync (current + 4 prior) ──
+const DEFAULT_SEASONS = [
+  "20252026",
+  "20242025",
+  "20232024",
+  "20222023",
+  "20212022",
+];
+
 // ── Main sync function ──
 
 export async function syncImpactStats(
   prisma: PrismaClient,
-  options?: { season?: string; concurrency?: number },
+  options?: { seasons?: string[]; concurrency?: number },
 ): Promise<ImpactSyncResult> {
-  const seasonId = options?.season ?? "20252026";
-  // Store season in the same format as other stats tables (raw 8-digit string)
-  const seasonStr = seasonId;
+  const seasons = options?.seasons ?? DEFAULT_SEASONS;
   const concurrency = options?.concurrency ?? 10;
 
-  const result: ImpactSyncResult = {
+  const totalResult: ImpactSyncResult = {
     playersProcessed: 0,
     statsCreated: 0,
     errors: [],
   };
 
-  console.log(`[ImpactSync] Starting impact stats sync for season ${seasonId}`);
-
-  // Delete existing impact stats for this season
-  await prisma.playerImpactStats.deleteMany({
-    where: { season: seasonStr },
-  });
-
-  // Get all active players with their teams
+  // Get all active players
   const players = await prisma.player.findMany({
     where: { isActive: true, currentTeamId: { not: null } },
     select: {
@@ -388,124 +394,141 @@ export async function syncImpactStats(
       nhlApiId: true,
       position: true,
       fullName: true,
-      currentTeam: { select: { abbreviation: true } },
     },
   });
 
-  // Cache team schedules
-  const teamScheduleCache = new Map<string, TeamGameResult[]>();
+  for (const seasonId of seasons) {
+    console.log(`[ImpactSync] Starting impact stats sync for season ${seasonId}`);
 
-  // Process in batches
-  for (let i = 0; i < players.length; i += concurrency) {
-    const batch = players.slice(i, i + concurrency);
+    // Delete existing impact stats for this season
+    await prisma.playerImpactStats.deleteMany({
+      where: { season: seasonId },
+    });
 
-    await Promise.all(
-      batch.map(async (player) => {
-        try {
-          const teamAbbrev = player.currentTeam?.abbreviation;
-          if (!teamAbbrev) return;
+    // Cache team schedules per season (keyed by "team-season")
+    const teamScheduleCache = new Map<string, TeamGameResult[]>();
 
-          // Fetch team schedule (cached)
-          if (!teamScheduleCache.has(teamAbbrev)) {
-            const schedule = await fetchTeamSchedule(teamAbbrev, seasonId);
-            teamScheduleCache.set(teamAbbrev, schedule);
+    let seasonStats = 0;
+
+    // Process in batches
+    for (let i = 0; i < players.length; i += concurrency) {
+      const batch = players.slice(i, i + concurrency);
+
+      await Promise.all(
+        batch.map(async (player) => {
+          try {
+            const isGoalie = player.position === "G";
+
+            // Fetch player game log first — this tells us which team they were on
+            const url = `${NHL_API}/player/${player.nhlApiId}/game-log/${seasonId}/2`;
+            const data = await fetchJSON(url);
+            if (!data?.gameLog || data.gameLog.length === 0) return;
+
+            // Determine team from game log entries (handles trades / historical teams)
+            const teamAbbrev = data.gameLog[0].teamAbbrev;
+            if (!teamAbbrev) return;
+
+            // Fetch team schedule (cached by team+season)
+            const cacheKey = `${teamAbbrev}-${seasonId}`;
+            if (!teamScheduleCache.has(cacheKey)) {
+              const schedule = await fetchTeamSchedule(teamAbbrev, seasonId);
+              teamScheduleCache.set(cacheKey, schedule);
+            }
+            const teamGames = teamScheduleCache.get(cacheKey) ?? [];
+
+            if (teamGames.length === 0) return;
+
+            let impactData;
+
+            if (isGoalie) {
+              const games: GoalieGameLogEntry[] = data.gameLog.map((g: any) => ({
+                gameId: g.gameId,
+                teamAbbrev: g.teamAbbrev,
+                homeRoadFlag: g.homeRoadFlag,
+                gameDate: g.gameDate,
+                gamesStarted: g.gamesStarted ?? 0,
+                decision: g.decision ?? "",
+                shotsAgainst: g.shotsAgainst ?? 0,
+                goalsAgainst: g.goalsAgainst ?? 0,
+                savePctg: g.savePctg ?? 0,
+                shutouts: g.shutouts ?? 0,
+                toi: g.toi,
+                opponentAbbrev: g.opponentAbbrev,
+              }));
+              impactData = processGoalieGameLog(games, teamGames);
+            } else {
+              const games: GameLogEntry[] = data.gameLog.map((g: any) => ({
+                gameId: g.gameId,
+                teamAbbrev: g.teamAbbrev,
+                homeRoadFlag: g.homeRoadFlag,
+                gameDate: g.gameDate,
+                goals: g.goals ?? 0,
+                assists: g.assists ?? 0,
+                points: g.points ?? 0,
+                plusMinus: g.plusMinus ?? 0,
+                powerPlayGoals: g.powerPlayGoals ?? 0,
+                gameWinningGoals: g.gameWinningGoals ?? 0,
+                otGoals: g.otGoals ?? 0,
+                shots: g.shots ?? 0,
+                pim: g.pim ?? 0,
+                toi: g.toi,
+                opponentAbbrev: g.opponentAbbrev,
+              }));
+              impactData = processSkaterGameLog(games, teamGames);
+            }
+
+            if (!impactData) return;
+
+            await prisma.playerImpactStats.create({
+              data: {
+                playerId: player.id,
+                season: seasonId,
+                teamWinPctWithPlayer: decOrNull(impactData.teamWinPctWithPlayer, 3),
+                teamWinPctWithout: decOrNull(impactData.teamWinPctWithout, 3),
+                winPctDifferential: decOrNull(impactData.winPctDifferential, 3),
+                teamWinPctWhenScoring: decOrNull(impactData.teamWinPctWhenScoring, 3),
+                teamWinPctWhenGettingPoint: decOrNull(impactData.teamWinPctWhenGettingPoint, 3),
+                teamWinPctWhenMultiPoint: decOrNull(impactData.teamWinPctWhenMultiPoint, 3),
+                teamRecordWithPlayer: impactData.teamRecordWithPlayer,
+                teamRecordWithout: impactData.teamRecordWithout,
+                pointsPerGameInWins: decOrNull(impactData.pointsPerGameInWins, 3),
+                goalsPerGameInWins: decOrNull(impactData.goalsPerGameInWins, 3),
+                gameScore: decOrNull(impactData.gameScore),
+                highImpactGames: impactData.highImpactGames,
+                clutchRating: decOrNull(impactData.clutchRating),
+                onIceGoalsForPer60: decOrNull(impactData.onIceGoalsForPer60),
+                onIceGoalsAgainstPer60: decOrNull(impactData.onIceGoalsAgainstPer60),
+                onIceShootingPct: decOrNull(impactData.onIceShootingPct),
+                onIceSavePct: decOrNull(impactData.onIceSavePct, 3),
+                pdo: decOrNull(impactData.pdo, 3),
+              },
+            });
+
+            seasonStats++;
+            totalResult.statsCreated++;
+          } catch (error) {
+            totalResult.errors.push(
+              `${player.fullName} (${seasonId}): ${error instanceof Error ? error.message : error}`,
+            );
           }
-          const teamGames = teamScheduleCache.get(teamAbbrev) ?? [];
+        }),
+      );
 
-          if (teamGames.length === 0) return;
-
-          const isGoalie = player.position === "G";
-
-          // Fetch player game log
-          const url = `${NHL_API}/player/${player.nhlApiId}/game-log/${seasonId}/2`;
-          const data = await fetchJSON(url);
-          if (!data?.gameLog || data.gameLog.length === 0) return;
-
-          let impactData;
-
-          if (isGoalie) {
-            const games: GoalieGameLogEntry[] = data.gameLog.map((g: any) => ({
-              gameId: g.gameId,
-              teamAbbrev: g.teamAbbrev,
-              homeRoadFlag: g.homeRoadFlag,
-              gameDate: g.gameDate,
-              gamesStarted: g.gamesStarted ?? 0,
-              decision: g.decision ?? "",
-              shotsAgainst: g.shotsAgainst ?? 0,
-              goalsAgainst: g.goalsAgainst ?? 0,
-              savePctg: g.savePctg ?? 0,
-              shutouts: g.shutouts ?? 0,
-              toi: g.toi,
-              opponentAbbrev: g.opponentAbbrev,
-            }));
-            impactData = processGoalieGameLog(games, teamGames);
-          } else {
-            const games: GameLogEntry[] = data.gameLog.map((g: any) => ({
-              gameId: g.gameId,
-              teamAbbrev: g.teamAbbrev,
-              homeRoadFlag: g.homeRoadFlag,
-              gameDate: g.gameDate,
-              goals: g.goals ?? 0,
-              assists: g.assists ?? 0,
-              points: g.points ?? 0,
-              plusMinus: g.plusMinus ?? 0,
-              powerPlayGoals: g.powerPlayGoals ?? 0,
-              gameWinningGoals: g.gameWinningGoals ?? 0,
-              otGoals: g.otGoals ?? 0,
-              shots: g.shots ?? 0,
-              pim: g.pim ?? 0,
-              toi: g.toi,
-              opponentAbbrev: g.opponentAbbrev,
-            }));
-            impactData = processSkaterGameLog(games, teamGames);
-          }
-
-          if (!impactData) return;
-
-          await prisma.playerImpactStats.create({
-            data: {
-              playerId: player.id,
-              season: seasonStr,
-              teamWinPctWithPlayer: decOrNull(impactData.teamWinPctWithPlayer, 3),
-              teamWinPctWithout: decOrNull(impactData.teamWinPctWithout, 3),
-              winPctDifferential: decOrNull(impactData.winPctDifferential, 3),
-              teamWinPctWhenScoring: decOrNull(impactData.teamWinPctWhenScoring, 3),
-              teamWinPctWhenGettingPoint: decOrNull(impactData.teamWinPctWhenGettingPoint, 3),
-              teamWinPctWhenMultiPoint: decOrNull(impactData.teamWinPctWhenMultiPoint, 3),
-              teamRecordWithPlayer: impactData.teamRecordWithPlayer,
-              teamRecordWithout: impactData.teamRecordWithout,
-              pointsPerGameInWins: decOrNull(impactData.pointsPerGameInWins, 3),
-              goalsPerGameInWins: decOrNull(impactData.goalsPerGameInWins, 3),
-              gameScore: decOrNull(impactData.gameScore),
-              highImpactGames: impactData.highImpactGames,
-              clutchRating: decOrNull(impactData.clutchRating),
-              onIceGoalsForPer60: decOrNull(impactData.onIceGoalsForPer60),
-              onIceGoalsAgainstPer60: decOrNull(impactData.onIceGoalsAgainstPer60),
-              onIceShootingPct: decOrNull(impactData.onIceShootingPct),
-              onIceSavePct: decOrNull(impactData.onIceSavePct, 3),
-              pdo: decOrNull(impactData.pdo, 3),
-            },
-          });
-
-          result.statsCreated++;
-          result.playersProcessed++;
-        } catch (error) {
-          result.errors.push(
-            `${player.fullName}: ${error instanceof Error ? error.message : error}`,
-          );
-        }
-      }),
-    );
-
-    // Rate limit between batches
-    if (i + concurrency < players.length) {
-      await sleep(200);
+      // Rate limit between batches
+      if (i + concurrency < players.length) {
+        await sleep(200);
+      }
     }
+
+    console.log(
+      `[ImpactSync] Season ${seasonId}: ${seasonStats} players processed`,
+    );
   }
 
+  totalResult.playersProcessed = players.length;
   console.log(
-    `[ImpactSync] Complete: ${result.statsCreated} players processed, ${result.errors.length} errors`,
+    `[ImpactSync] Complete: ${totalResult.statsCreated} total stats across ${seasons.length} seasons, ${totalResult.errors.length} errors`,
   );
 
-  return result;
+  return totalResult;
 }

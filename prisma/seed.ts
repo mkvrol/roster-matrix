@@ -105,10 +105,12 @@ async function main() {
 
   // ── 3. Admin user ──
   console.log("  Creating admin user...");
+  const adminPasswordHash = await bcrypt.hash("admin2025", 10);
   await prisma.user.create({
     data: {
       email: "admin@rostermatrix.app",
       name: "Admin",
+      passwordHash: adminPasswordHash,
       role: "ADMIN",
       emailVerified: new Date(),
     },
@@ -774,6 +776,106 @@ async function main() {
   console.log(`  Trade scenarios: ${[mcdavid && marner, huberdeau && kane, kane].filter(Boolean).length}`);
   console.log(`  Saved reports: ${[comparisonPlayers.length >= 3, valueTargets.length >= 3].filter(Boolean).length}`);
 
+  // ── Seed team transactions and injuries ──
+  console.log("  Seeding transactions and injuries...");
+
+  const now = new Date();
+
+  function recentDate(daysAgo: number): Date {
+    const d = new Date(now);
+    d.setDate(d.getDate() - daysAgo);
+    return d;
+  }
+
+  const txEntries: Array<{ team: string; type: "TRADE" | "SIGNING" | "WAIVER" | "RECALL"; desc: string; days: number }> = [
+    { team: "TOR", type: "SIGNING", desc: "Signed F Bobby McMann to a 3-year, $6.75M extension", days: 5 },
+    { team: "TOR", type: "TRADE", desc: "Acquired D Chris Tanev from DAL for a 2026 2nd-round pick", days: 18 },
+    { team: "TOR", type: "RECALL", desc: "Recalled F Fraser Minten from AHL Toronto Marlies", days: 25 },
+    { team: "TOR", type: "WAIVER", desc: "Placed D Timothy Liljegren on waivers", days: 40 },
+    { team: "EDM", type: "SIGNING", desc: "Signed F Leon Draisaitl to an 8-year, $112M extension", days: 3 },
+    { team: "EDM", type: "TRADE", desc: "Acquired F Vasily Podkolzin from VAN for a 2026 4th-round pick", days: 12 },
+    { team: "EDM", type: "RECALL", desc: "Recalled D Philip Broberg from AHL Bakersfield", days: 30 },
+    { team: "COL", type: "TRADE", desc: "Acquired F Mikko Rantanen from CAR in three-team deal", days: 8 },
+    { team: "COL", type: "SIGNING", desc: "Signed G Alexandar Georgiev to a 1-year, $3.4M deal", days: 22 },
+    { team: "COL", type: "WAIVER", desc: "Claimed F Miles Wood off waivers from NJD", days: 35 },
+    { team: "NYR", type: "TRADE", desc: "Traded D Jacob Trouba to ANA for draft picks", days: 6 },
+    { team: "NYR", type: "SIGNING", desc: "Signed F Artemi Panarin to a 5-year extension", days: 15 },
+    { team: "NYR", type: "RECALL", desc: "Recalled F Brennan Othmann from AHL Hartford", days: 28 },
+    { team: "DET", type: "SIGNING", desc: "Signed D Simon Edvinsson to a 3-year, $3.15M extension", days: 4 },
+    { team: "DET", type: "TRADE", desc: "Acquired F Vladimir Tarasenko in a deadline deal with OTT", days: 10 },
+    { team: "DET", type: "WAIVER", desc: "Placed F Robby Fabbri on unconditional waivers", days: 45 },
+    { team: "FLA", type: "SIGNING", desc: "Signed G Sergei Bobrovsky to a 2-year extension", days: 7 },
+    { team: "FLA", type: "TRADE", desc: "Acquired D Oliver Ekman-Larsson from TOR for future considerations", days: 20 },
+    { team: "CAR", type: "TRADE", desc: "Traded F Martin Necas to COL in three-team deal", days: 8 },
+    { team: "CAR", type: "SIGNING", desc: "Signed F Sebastian Aho to a 8-year, $78M extension", days: 14 },
+    { team: "CAR", type: "RECALL", desc: "Recalled D Scott Morrow from AHL Chicago", days: 33 },
+    { team: "WPG", type: "SIGNING", desc: "Signed G Connor Hellebuyck to a 6-year, $49.5M extension", days: 9 },
+    { team: "WPG", type: "TRADE", desc: "Acquired F Nikolaj Ehlers from NYI for a 2026 1st-round pick", days: 16 },
+    { team: "DAL", type: "SIGNING", desc: "Signed F Jason Robertson to a 4-year, $31.2M extension", days: 11 },
+    { team: "DAL", type: "TRADE", desc: "Traded D Chris Tanev to TOR for a 2026 2nd-round pick", days: 18 },
+    { team: "DAL", type: "RECALL", desc: "Recalled F Logan Stankoven from AHL Texas Stars", days: 42 },
+    { team: "BOS", type: "SIGNING", desc: "Signed D Charlie McAvoy to a 4-year, $38.4M extension", days: 13 },
+    { team: "BOS", type: "TRADE", desc: "Acquired F Tyler Bertuzzi from CHI for a 2026 3rd-round pick", days: 21 },
+    { team: "BOS", type: "WAIVER", desc: "Placed F Jakub Lauko on waivers", days: 38 },
+  ];
+
+  for (const tx of txEntries) {
+    const tid = teamMap.get(tx.team);
+    if (!tid) continue;
+    await prisma.transaction.create({
+      data: {
+        teamId: tid,
+        type: tx.type,
+        description: tx.desc,
+        playersInvolved: [],
+        date: recentDate(tx.days),
+      },
+    });
+  }
+
+  const injuryEntries: Array<{ team: string; playerName: string; type: "DAY_TO_DAY" | "IR" | "LTIR" | "OUT"; desc: string; daysAgo: number; returnDays: number | null }> = [
+    { team: "TOR", playerName: "Auston Matthews", type: "DAY_TO_DAY", desc: "Upper body", daysAgo: 3, returnDays: 5 },
+    { team: "TOR", playerName: "John Tavares", type: "IR", desc: "Lower body", daysAgo: 14, returnDays: 21 },
+    { team: "EDM", playerName: "Evander Kane", type: "LTIR", desc: "Wrist surgery", daysAgo: 45, returnDays: null },
+    { team: "COL", playerName: "Gabriel Landeskog", type: "LTIR", desc: "Knee - ACL recovery", daysAgo: 180, returnDays: null },
+    { team: "NYR", playerName: "Alexis Lafreniere", type: "DAY_TO_DAY", desc: "Upper body", daysAgo: 2, returnDays: 4 },
+    { team: "DET", playerName: "Tyler Bertuzzi", type: "IR", desc: "Hand fracture", daysAgo: 10, returnDays: 28 },
+    { team: "DET", playerName: "Jeff Petry", type: "DAY_TO_DAY", desc: "Lower body", daysAgo: 5, returnDays: 7 },
+    { team: "CAR", playerName: "Frederik Andersen", type: "IR", desc: "Knee", daysAgo: 20, returnDays: 35 },
+    { team: "CAR", playerName: "Jesperi Kotkaniemi", type: "DAY_TO_DAY", desc: "Upper body", daysAgo: 4, returnDays: 7 },
+    { team: "WPG", playerName: "Nikolaj Ehlers", type: "IR", desc: "Ankle sprain", daysAgo: 12, returnDays: 30 },
+    { team: "FLA", playerName: "Aleksander Barkov", type: "DAY_TO_DAY", desc: "Lower body", daysAgo: 3, returnDays: 6 },
+    { team: "DAL", playerName: "Tyler Seguin", type: "LTIR", desc: "Hip surgery recovery", daysAgo: 90, returnDays: null },
+    { team: "BOS", playerName: "Brad Marchand", type: "DAY_TO_DAY", desc: "Upper body", daysAgo: 2, returnDays: 5 },
+  ];
+
+  for (const inj of injuryEntries) {
+    const tid = teamMap.get(inj.team);
+    if (!tid) continue;
+    const player = await prisma.player.findFirst({
+      where: { fullName: inj.playerName, currentTeamId: tid },
+      select: { id: true },
+    });
+    if (!player) continue;
+    const injDate = recentDate(inj.daysAgo);
+    const retDate = inj.returnDays ? new Date(injDate.getTime() + inj.returnDays * 24 * 60 * 60 * 1000) : null;
+    await prisma.injury.create({
+      data: {
+        playerId: player.id,
+        teamId: tid,
+        type: inj.type,
+        description: inj.desc,
+        date: injDate,
+        expectedReturn: retDate,
+      },
+    });
+  }
+
+  const txCount = await prisma.transaction.count();
+  const injCount = await prisma.injury.count();
+  console.log(`  Transactions: ${txCount}`);
+  console.log(`  Injuries: ${injCount}`);
+
   // ── 10. Sample analytics events ──
   console.log("  Seeding sample analytics events...");
 
@@ -803,7 +905,6 @@ async function main() {
   }> = [];
 
   // Generate 30 days of events
-  const now = new Date();
   for (let dayOffset = 29; dayOffset >= 0; dayOffset--) {
     const day = new Date(now);
     day.setDate(day.getDate() - dayOffset);

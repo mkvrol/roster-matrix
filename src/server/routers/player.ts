@@ -375,6 +375,19 @@ export const playerRouter = router({
         },
       });
 
+      const careerImpact = await prisma.playerImpactStats.findMany({
+        where: { playerId: input.playerId },
+        select: {
+          season: true,
+          teamWinPctWithPlayer: true,
+          teamWinPctWithout: true,
+          winPctDifferential: true,
+          clutchRating: true,
+          highImpactGames: true,
+          gameScore: true,
+        },
+      });
+
       const contract = player.contracts[0];
       const stats = player.seasonStats[0];
       const goalie = player.goalieStats?.[0];
@@ -553,6 +566,27 @@ export const playerRouter = router({
               peerRank: score.peerRank,
               leagueRank: score.leagueRank,
               calculatedAt: score.calculatedAt,
+            }
+          : null,
+        careerImpactStats: careerImpact.length > 0
+          ? {
+              seasons: careerImpact.length,
+              avgWinPctDifferential:
+                careerImpact.filter((c) => c.winPctDifferential != null).length > 0
+                  ? careerImpact.reduce((s, c) => s + (c.winPctDifferential ? Number(c.winPctDifferential) : 0), 0) /
+                    careerImpact.filter((c) => c.winPctDifferential != null).length
+                  : null,
+              avgClutchRating:
+                careerImpact.filter((c) => c.clutchRating != null).length > 0
+                  ? careerImpact.reduce((s, c) => s + (c.clutchRating ? Number(c.clutchRating) : 0), 0) /
+                    careerImpact.filter((c) => c.clutchRating != null).length
+                  : null,
+              totalHighImpactGames: careerImpact.reduce((s, c) => s + (c.highImpactGames ?? 0), 0),
+              avgGameScore:
+                careerImpact.filter((c) => c.gameScore != null).length > 0
+                  ? careerImpact.reduce((s, c) => s + (c.gameScore ? Number(c.gameScore) : 0), 0) /
+                    careerImpact.filter((c) => c.gameScore != null).length
+                  : null,
             }
           : null,
       };

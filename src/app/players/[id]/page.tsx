@@ -1944,6 +1944,71 @@ function ImpactTab({ profile }: { profile: Profile }) {
           </Card>
         )}
       </div>
+
+      {/* Career Impact Summary */}
+      {profile.careerImpactStats && (
+        <Card title="Career Impact Summary" icon={TrendingUp}>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="rounded-md bg-surface-2 p-3 text-center">
+              <p className="text-data-xs text-text-muted">Career Seasons</p>
+              <p className="mt-1 font-mono text-lg font-semibold text-text-primary">
+                {profile.careerImpactStats.seasons}
+              </p>
+            </div>
+            <div className="rounded-md bg-surface-2 p-3 text-center">
+              <p className="text-data-xs text-text-muted">Avg Win % Impact</p>
+              <p className={cn(
+                "mt-1 font-mono text-lg font-semibold",
+                profile.careerImpactStats.avgWinPctDifferential != null && profile.careerImpactStats.avgWinPctDifferential > 0
+                  ? "text-success"
+                  : profile.careerImpactStats.avgWinPctDifferential != null && profile.careerImpactStats.avgWinPctDifferential < 0
+                    ? "text-danger"
+                    : "text-text-primary",
+              )}>
+                {profile.careerImpactStats.avgWinPctDifferential != null
+                  ? `${profile.careerImpactStats.avgWinPctDifferential > 0 ? "+" : ""}${(profile.careerImpactStats.avgWinPctDifferential * 100).toFixed(1)}%`
+                  : "—"}
+              </p>
+            </div>
+            <div className="rounded-md bg-surface-2 p-3 text-center">
+              <p className="text-data-xs text-text-muted">Avg Clutch Rating</p>
+              <p className="mt-1 font-mono text-lg font-semibold text-text-primary">
+                {profile.careerImpactStats.avgClutchRating?.toFixed(0) ?? "—"}
+              </p>
+            </div>
+            <div className="rounded-md bg-surface-2 p-3 text-center">
+              <p className="text-data-xs text-text-muted">Total High Impact Games</p>
+              <p className="mt-1 font-mono text-lg font-semibold text-text-primary">
+                {profile.careerImpactStats.totalHighImpactGames}
+              </p>
+            </div>
+          </div>
+          {/* Season vs Career comparison */}
+          {imp && profile.careerImpactStats.avgWinPctDifferential != null && imp.winPctDifferential != null && (
+            <div className="mt-4 flex items-center justify-center gap-6 rounded bg-surface-2 px-4 py-3">
+              <div className="text-center">
+                <p className="text-data-xs text-text-muted">This Season</p>
+                <p className={cn(
+                  "font-mono text-data-base font-bold",
+                  imp.winPctDifferential > 0 ? "text-success" : imp.winPctDifferential < 0 ? "text-danger" : "text-text-primary",
+                )}>
+                  {imp.winPctDifferential > 0 ? "+" : ""}{(imp.winPctDifferential * 100).toFixed(1)}%
+                </p>
+              </div>
+              <span className="text-text-muted">vs</span>
+              <div className="text-center">
+                <p className="text-data-xs text-text-muted">Career Avg</p>
+                <p className={cn(
+                  "font-mono text-data-base font-bold",
+                  profile.careerImpactStats.avgWinPctDifferential > 0 ? "text-success" : profile.careerImpactStats.avgWinPctDifferential < 0 ? "text-danger" : "text-text-primary",
+                )}>
+                  {profile.careerImpactStats.avgWinPctDifferential > 0 ? "+" : ""}{(profile.careerImpactStats.avgWinPctDifferential * 100).toFixed(1)}%
+                </p>
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
     </div>
   );
 }
@@ -2175,81 +2240,103 @@ function CapHitBreakdown({
 
   const currentSeasonKey = `${CURRENT_SEASON_START}-${String(CURRENT_SEASON_END).slice(2)}`;
 
+  const circumference = 2 * Math.PI * 32;
+
   return (
     <Card title="Year-by-Year Cap Hit">
-      <div className="space-y-2">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {years.map(([year, rawAmount]) => {
-          // Normalise to full dollars — values stored in millions (< 100k) get converted
           const amount = rawAmount > 0 && rawAmount < 100_000 ? rawAmount * 1_000_000 : rawAmount;
           const vs = valueScoreBySeason[year];
           const capCeiling = getCapCeiling(year);
-          const barPct = capCeiling ? (amount / capCeiling) * 100 : 10;
-          const capPct = capCeiling ? (amount / capCeiling) * 100 : null;
+          const pct = capCeiling ? Math.min((amount / capCeiling) * 100, 100) : 0;
+          const dashOffset = circumference - (pct / 100) * circumference;
           const startYear = getSeasonStartYear(year);
           const isCurrent = year === currentSeasonKey;
           const isFuture = startYear >= CURRENT_SEASON_END;
+
+          const strokeColor = isCurrent
+            ? "var(--color-accent, #6366f1)"
+            : isFuture
+              ? "rgba(99,102,241,0.4)"
+              : "#10b981";
 
           return (
             <div
               key={year}
               className={cn(
-                "flex items-center gap-3 rounded-md px-2 py-1.5",
-                isCurrent && "bg-accent/5 ring-1 ring-accent/20",
+                "flex flex-col items-center rounded-lg border border-border-subtle bg-surface-2 px-2 py-3",
+                isCurrent && "ring-1 ring-accent/30 border-accent/40",
                 isFuture && "opacity-60",
               )}
             >
               <span
                 className={cn(
-                  "w-16 shrink-0 text-data-sm",
+                  "text-data-xs",
                   isCurrent ? "font-semibold text-accent" : "text-text-secondary",
                 )}
               >
                 {year}
               </span>
-              <div className="min-w-0 flex-1">
-                <div className="h-5 overflow-hidden rounded bg-surface-2">
-                  <div
-                    className={cn(
-                      "h-full rounded transition-all duration-500",
-                      isFuture ? "bg-accent/40" : "bg-accent",
-                      isFuture && "border border-dashed border-accent/60",
-                    )}
-                    style={{ width: `${barPct}%` }}
-                  />
-                </div>
-              </div>
-              <div className="w-24 shrink-0 text-right">
-                <span className="font-mono text-data-sm font-semibold text-text-primary">
+
+              <svg viewBox="0 0 80 80" className="my-1.5 h-16 w-16">
+                <circle
+                  cx={40}
+                  cy={40}
+                  r={32}
+                  fill="none"
+                  stroke="#1e293b"
+                  strokeWidth={6}
+                />
+                <circle
+                  cx={40}
+                  cy={40}
+                  r={32}
+                  fill="none"
+                  stroke={strokeColor}
+                  strokeWidth={6}
+                  strokeLinecap="round"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={dashOffset}
+                  transform="rotate(-90 40 40)"
+                />
+                <text
+                  x={40}
+                  y={40}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  className="fill-text-primary font-mono text-[10px] font-semibold"
+                >
                   {fmtCap(amount)}
-                </span>
-                {capPct !== null && (
-                  <span className="ml-1 font-mono text-data-xs text-text-muted">
-                    {capPct.toFixed(1)}%
-                  </span>
-                )}
-              </div>
-              <span className="w-24 shrink-0">
+                </text>
+              </svg>
+
+              <span className="text-data-xs text-text-muted">
+                Cap: {capCeiling ? fmtCap(capCeiling) : "—"}
+              </span>
+
+              <span className="mt-1 w-full">
                 {vs ? (
                   <CapHitValueBadge score={vs.score} />
                 ) : (
                   <span className="block text-center text-data-xs text-text-muted">—</span>
                 )}
               </span>
-              <span className="w-16 shrink-0 text-right font-mono text-data-xs text-text-muted">
-                {capCeiling ? fmtCap(capCeiling) : "—"}
-              </span>
             </div>
           );
         })}
       </div>
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border-subtle pt-3 text-data-xs text-text-muted">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-data-xs text-text-muted">
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-sm bg-accent" /> Past / Current
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" /> Past
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-sm border border-dashed border-accent/60 bg-accent/40" /> Future (projected)
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent" /> Current
         </span>
-        <span className="ml-auto">Bar = AAV as % of salary cap · Right column = cap ceiling</span>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent/40" /> Future
+        </span>
+        <span className="ml-auto">Donut fill = AAV as % of salary cap</span>
       </div>
     </Card>
   );

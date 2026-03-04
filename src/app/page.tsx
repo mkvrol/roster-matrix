@@ -42,7 +42,7 @@ const FEATURES = [
 const STATS = [
   { value: "800+", label: "Players Scored" },
   { value: "32", label: "Teams Tracked" },
-  { value: "4", label: "Seasons of Data" },
+  { value: "20+", label: "Years of History" },
   { value: "Real-time", label: "Value Updates" },
 ] as const;
 

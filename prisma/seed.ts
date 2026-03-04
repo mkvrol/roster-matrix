@@ -64,6 +64,7 @@ async function main() {
 
   // ── 1. Clear tables ──
   console.log("  Clearing existing data...");
+  await prisma.analyticsEvent.deleteMany();
   await prisma.draftPick.deleteMany();
   await prisma.injury.deleteMany();
   await prisma.transaction.deleteMany();
@@ -773,7 +774,99 @@ async function main() {
   console.log(`  Trade scenarios: ${[mcdavid && marner, huberdeau && kane, kane].filter(Boolean).length}`);
   console.log(`  Saved reports: ${[comparisonPlayers.length >= 3, valueTargets.length >= 3].filter(Boolean).length}`);
 
-  // ── 10. Summary ──
+  // ── 10. Sample analytics events ──
+  console.log("  Seeding sample analytics events...");
+
+  const rand = seededRandom(42);
+  const analyticsUsers = [demoUser.id];
+  const adminUser = await prisma.user.findFirst({ where: { role: "ADMIN" }, select: { id: true } });
+  if (adminUser) analyticsUsers.push(adminUser.id);
+
+  const samplePlayers = [mcdavid, matthews, makar, draisaitl, mackinnon, hellebuyck, shesterkin, marner, celebrini, raymond].filter(Boolean);
+  const sampleTeamAbbrevs = ["TOR", "EDM", "COL", "NYR", "WPG", "FLA", "DAL", "CAR", "VGK", "BOS"];
+  const sampleSearches = ["McDavid", "Matthews", "Makar", "Draisaitl", "centers under 7M", "defensemen", "goalies", "ELC", "Celebrini", "Raymond"];
+  const sampleAIQueries = [
+    "Best value centers under $7M",
+    "Overpaid defensemen",
+    "Top ELC steals",
+    "Backup goalies under $2M",
+    "Who has the best contract in the league?",
+    "Compare McDavid and Matthews",
+    "Trade targets for Colorado",
+    "Expiring UFA forwards",
+  ];
+  const events: Array<{
+    eventType: string;
+    userId: string | null;
+    metadata: Prisma.InputJsonValue | undefined;
+    timestamp: Date;
+  }> = [];
+
+  // Generate 30 days of events
+  const now = new Date();
+  for (let dayOffset = 29; dayOffset >= 0; dayOffset--) {
+    const day = new Date(now);
+    day.setDate(day.getDate() - dayOffset);
+    const eventsPerDay = 5 + Math.floor(rand() * 20);
+
+    for (let e = 0; e < eventsPerDay; e++) {
+      const userId = analyticsUsers[Math.floor(rand() * analyticsUsers.length)];
+      const hour = Math.floor(rand() * 14) + 8;
+      const minute = Math.floor(rand() * 60);
+      const ts = new Date(day);
+      ts.setHours(hour, minute, 0, 0);
+
+      // Weighted event type selection
+      const r = rand();
+      let eventType: string;
+      let metadata: Record<string, unknown> | undefined = undefined;
+
+      if (r < 0.30) {
+        eventType = "PAGE_VIEW";
+        metadata = { page: ["/dashboard", "/players", "/contracts", "/league-overview", "/compare", "/watchlist"][Math.floor(rand() * 6)] };
+      } else if (r < 0.50) {
+        eventType = "PLAYER_VIEW";
+        const p = samplePlayers[Math.floor(rand() * samplePlayers.length)]!;
+        metadata = { playerId: p.id, playerName: p.fullName, teamAbbrev: "NHL" };
+      } else if (r < 0.60) {
+        eventType = "TEAM_VIEW";
+        const abbrev = sampleTeamAbbrevs[Math.floor(rand() * sampleTeamAbbrevs.length)];
+        metadata = { teamAbbrev: abbrev, teamName: abbrev };
+      } else if (r < 0.72) {
+        eventType = "SEARCH";
+        metadata = { query: sampleSearches[Math.floor(rand() * sampleSearches.length)] };
+      } else if (r < 0.82) {
+        eventType = "AI_SCOUT_QUERY";
+        metadata = { query: sampleAIQueries[Math.floor(rand() * sampleAIQueries.length)] };
+      } else if (r < 0.87) {
+        eventType = "AI_BRIEFING_GENERATED";
+        metadata = { teamId: "demo" };
+      } else if (r < 0.90) {
+        eventType = "TRADE_SAVED";
+        metadata = { name: "Demo trade" };
+      } else if (r < 0.93) {
+        eventType = "WATCHLIST_ADDED";
+        const p = samplePlayers[Math.floor(rand() * samplePlayers.length)]!;
+        metadata = { playerId: p.id };
+      } else if (r < 0.95) {
+        eventType = "COMPARISON_CREATED";
+      } else if (r < 0.97) {
+        eventType = "REPORT_EXPORTED";
+      } else if (r < 0.99) {
+        eventType = "LOGIN";
+      } else {
+        eventType = "DEMO_LOGIN";
+      }
+
+      events.push({ eventType, userId, metadata: metadata as Prisma.InputJsonValue | undefined, timestamp: ts });
+    }
+  }
+
+  // Batch insert
+  await prisma.analyticsEvent.createMany({ data: events });
+  console.log(`  Analytics events: ${events.length}`);
+
+  // ── 11. Summary ──
   const teamCount = await prisma.team.count();
   const playerCount = await prisma.player.count();
   const contractCount = await prisma.contract.count();
@@ -782,6 +875,7 @@ async function main() {
   const advStatsCount = await prisma.advancedStats.count();
   const valueScoreCount = await prisma.playerValueScore.count();
   const impactStatsCount = await prisma.playerImpactStats.count();
+  const analyticsCount = await prisma.analyticsEvent.count();
 
   console.log("\n✅ Seed complete!");
   console.log(`   Teams:          ${teamCount}`);
@@ -792,6 +886,7 @@ async function main() {
   console.log(`   Advanced Stats: ${advStatsCount}`);
   console.log(`   Impact Stats:   ${impactStatsCount}`);
   console.log(`   Value Scores:   ${valueScoreCount}`);
+  console.log(`   Analytics:      ${analyticsCount}`);
 }
 
 main()

@@ -4,6 +4,7 @@ import type { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { trackEvent } from "@/server/services/analytics";
 import { prisma } from "./prisma";
 
 export const authOptions: NextAuthOptions = {
@@ -57,6 +58,8 @@ export const authOptions: NextAuthOptions = {
             where: { id: dbUser.id },
             data: { lastLogin: new Date() },
           });
+          const isDemo = user.email === "demo@rostermatrix.app";
+          trackEvent(isDemo ? "DEMO_LOGIN" : "LOGIN", dbUser.id);
         }
       }
       if (trigger === "update") {

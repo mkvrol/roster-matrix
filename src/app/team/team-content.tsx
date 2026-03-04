@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
@@ -124,6 +124,18 @@ export function TeamPageContent({ initialAbbrev }: { initialAbbrev?: string }) {
 
   const [selectedTeamId, setSelectedTeamId] = useState<string | undefined>(undefined);
   const teamId = selectedTeamId ?? resolvedTeamId;
+
+  const trackMutation = trpc.analytics.track.useMutation();
+  useEffect(() => {
+    if (teamId) {
+      const team = teams?.find((t) => t.id === teamId);
+      trackMutation.mutate({
+        eventType: "TEAM_VIEW",
+        metadata: { teamId, teamAbbrev: team?.abbreviation ?? null, teamName: team?.name ?? null },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [teamId]);
 
   const overview = trpc.team.getOverview.useQuery({ teamId: teamId! }, { enabled: !!teamId });
   const roster = trpc.team.getRoster.useQuery({ teamId: teamId! }, { enabled: !!teamId });

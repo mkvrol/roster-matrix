@@ -14,6 +14,7 @@ import {
   findComparableContracts,
 } from "@/lib/value-engine";
 import type { Position, ValueInput } from "@/lib/value-engine";
+import { trackEvent } from "../services/analytics";
 
 const CURRENT_SEASON_END = 2026;
 
@@ -469,7 +470,7 @@ export const reportRouter = router({
       const title =
         input.title ?? `${player.fullName} — Player Evaluation`;
 
-      return prisma.savedReport.create({
+      const report = await prisma.savedReport.create({
         data: {
           userId,
           title,
@@ -477,6 +478,10 @@ export const reportRouter = router({
           configuration: configuration as Prisma.InputJsonValue,
         },
       });
+
+      trackEvent("REPORT_EXPORTED", userId, { playerId: input.playerId, reportId: report.id });
+
+      return report;
     }),
 
   // ── Delete a report ──

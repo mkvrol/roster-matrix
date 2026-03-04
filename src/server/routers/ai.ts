@@ -18,6 +18,18 @@ import {
   withRetry,
 } from "../services/ai";
 import { getLatestSeason } from "../services/value-batch";
+import { trackEvent } from "../services/analytics";
+
+async function getUserId(
+  session: { user?: { email?: string | null } },
+): Promise<string | null> {
+  if (!session.user?.email) return null;
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { id: true },
+  });
+  return user?.id ?? null;
+}
 
 const SALARY_CAP = 95_500_000;
 const CURRENT_SEASON_END = 2026;
@@ -212,6 +224,7 @@ If the question is about comparisons, trades, or recommendations, provide action
     .input(z.object({ teamId: z.string().optional() }))
     .mutation(async ({ ctx, input }) => {
       requireAI();
+      trackEvent("AI_BRIEFING_GENERATED", undefined, { teamId: input.teamId });
       const season = await getLatestSeason();
       const teamId = input.teamId ?? (await getUserTeamId(ctx.session));
 
@@ -531,6 +544,7 @@ Only recommend players who genuinely address roster weaknesses. Factor in age al
     .input(z.object({ playerId: z.string() }))
     .mutation(async ({ input }) => {
       requireAI();
+      trackEvent("AI_NEGOTIATION_VIEWED", undefined, { playerId: input.playerId });
       const season = await getLatestSeason();
 
       const player = await prisma.player.findUniqueOrThrow({
@@ -744,6 +758,8 @@ Be specific with dollar amounts throughout. Reference the salary cap ($95.5M) co
     )
     .mutation(async ({ ctx, input }) => {
       requireAI();
+      const userId = await getUserId(ctx.session).catch(() => null);
+      trackEvent("AI_SCOUT_QUERY", userId, { query: input.message });
       const season = await getLatestSeason();
       const userTeamId = await getUserTeamId(ctx.session);
 

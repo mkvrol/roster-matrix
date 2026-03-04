@@ -31,6 +31,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import { usePageView } from "@/lib/use-track";
 
 // ── Types ──
 
@@ -60,6 +61,7 @@ const POSITIONS = ["C", "LW", "RW", "D", "G"] as const;
 // ── Main page ──
 
 export default function ContractsPage() {
+  usePageView("/contracts");
   const [activeTab, setActiveTab] = useState<Tab>("database");
 
   return (

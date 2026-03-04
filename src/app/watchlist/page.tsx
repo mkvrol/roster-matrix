@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
+import { usePageView } from "@/lib/use-track";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/page-header";
@@ -40,6 +41,7 @@ function fmtCap(value: number): string {
 // ── Main page ──
 
 export default function WatchListPage() {
+  usePageView("/watchlist");
   const router = useRouter();
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [newListName, setNewListName] = useState("");

@@ -18,6 +18,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Search, X, Plus, GitCompareArrows } from "lucide-react";
+import { usePageView } from "@/lib/use-track";
 
 // ── Constants ──
 
@@ -63,6 +64,7 @@ interface SelectedPlayer {
 // ── Main Page ──
 
 export default function ComparePage() {
+  usePageView("/compare");
   return (
     <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-surface-1" />}>
       <ComparePageContent />
@@ -99,10 +101,18 @@ function ComparePageContent() {
       { enabled: playerIds.length >= 2, staleTime: 15 * 60 * 1000 },
     );
 
+  const trackMutation = trpc.analytics.track.useMutation();
   const addPlayer = (player: SelectedPlayer) => {
     if (selectedPlayers.length >= 4) return;
     if (selectedPlayers.some((p) => p.id === player.id)) return;
-    setSelectedPlayers((prev) => [...prev, player]);
+    const next = [...selectedPlayers, player];
+    setSelectedPlayers(next);
+    if (next.length >= 2) {
+      trackMutation.mutate({
+        eventType: "COMPARISON_CREATED",
+        metadata: { playerIds: next.map((p) => p.id) },
+      });
+    }
   };
 
   const removePlayer = (id: string) => {

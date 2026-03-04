@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Filter,
 } from "lucide-react";
+import { usePageView } from "@/lib/use-track";
 
 // ── Types ──
 
@@ -27,6 +28,7 @@ type SortDir = "asc" | "desc";
 // ── Main page ──
 
 export default function PlayersPage() {
+  usePageView("/players");
   const router = useRouter();
   const { data: teams } = trpc.league.getTeams.useQuery(undefined, {
     staleTime: 60 * 60 * 1000,

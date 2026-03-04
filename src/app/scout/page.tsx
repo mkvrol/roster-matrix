@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { trpc } from "@/lib/trpc";
+import { usePageView } from "@/lib/use-track";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/page-header";
 import { TeamLogo } from "@/components/ui/team-logo";
@@ -281,6 +282,7 @@ function PlayerRecommendation({ player }: { player: PlayerCard }) {
 // ── Main page ──
 
 export default function ScoutPage() {
+  usePageView("/scout");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<

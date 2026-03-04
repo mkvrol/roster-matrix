@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { PlayerAvatar } from "@/components/ui/player-avatar";
@@ -26,6 +27,7 @@ import {
   Menu,
   X,
   Loader2,
+  BarChart3,
 } from "lucide-react";
 
 const navItems = [
@@ -41,6 +43,7 @@ const navItems = [
   { href: "/watchlist", label: "Watch Lists", icon: Star, tourId: "nav-watchlist" },
   { href: "/reports", label: "Reports", icon: ClipboardList },
   { href: "/admin", label: "Admin", icon: Shield },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3, adminOnly: true },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -48,6 +51,9 @@ export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const isAdmin = (session?.user as any)?.role === "ADMIN";
+  const visibleNavItems = navItems.filter((item) => !item.adminOnly || isAdmin);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -130,9 +136,11 @@ export function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-0.5 overflow-y-auto p-2" aria-label="Primary">
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const isActive =
-              pathname === item.href || pathname.startsWith(item.href + "/");
+              item.href === "/admin"
+                ? pathname === "/admin"
+                : pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <Link
                 key={item.href}
@@ -196,9 +204,15 @@ function SidebarSearch() {
     { enabled: debouncedQuery.length >= 2 },
   );
 
+  const trackMutation = trpc.analytics.track.useMutation();
+
   // Show dropdown when we have a query
   useEffect(() => {
     setOpen(debouncedQuery.length >= 2);
+    if (debouncedQuery.length >= 2) {
+      trackMutation.mutate({ eventType: "SEARCH", metadata: { query: debouncedQuery } });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery]);
 
   // Close on outside click

@@ -12,6 +12,7 @@ import { reportRouter } from "./report";
 import { notificationRouter } from "./notification";
 import { aiRouter } from "./ai";
 import { teamRouter } from "./team";
+import { analyticsRouter } from "./analytics";
 
 export const appRouter = router({
   health: healthRouter,
@@ -27,6 +28,7 @@ export const appRouter = router({
   notification: notificationRouter,
   ai: aiRouter,
   team: teamRouter,
+  analytics: analyticsRouter,
 });
 
 export type AppRouter = typeof appRouter;

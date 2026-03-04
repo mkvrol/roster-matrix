@@ -30,6 +30,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
+import { usePageView } from "@/lib/use-track";
 
 // ── Types ──
 
@@ -50,6 +51,7 @@ const POSITION_COLORS: Record<string, string> = {
 // ── Main page ──
 
 export default function LeagueOverviewPage() {
+  usePageView("/league-overview");
   return (
     <div className="space-y-6">
       <PageHeader

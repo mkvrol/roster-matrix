@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
@@ -78,6 +78,21 @@ export default function PlayerDetailPage({
   const { data: profile, isLoading } = trpc.player.getProfile.useQuery({
     playerId: params.id,
   });
+
+  const trackMutation = trpc.analytics.track.useMutation();
+  useEffect(() => {
+    if (profile) {
+      trackMutation.mutate({
+        eventType: "PLAYER_VIEW",
+        metadata: {
+          playerId: params.id,
+          playerName: profile.fullName,
+          teamAbbrev: profile.team?.abbreviation ?? null,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id, profile?.fullName]);
 
   if (isLoading) return <PageSkeleton />;
   if (!profile) {

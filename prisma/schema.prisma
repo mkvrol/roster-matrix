@@ -559,6 +559,19 @@ model Injury {
   @@index([type])
 }
 
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  eventType String
+  userId    String?
+  metadata  Json?
+
+  @@index([eventType])
+  @@index([timestamp])
+  @@index([userId])
+  @@index([eventType, timestamp])
+}
+
 model DraftPick {
   id             String  @id @default(cuid())
   teamId         String

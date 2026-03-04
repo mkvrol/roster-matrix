@@ -8,6 +8,7 @@ import type { Prisma } from "@prisma/client";
 import { protectedProcedure, router } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { getLatestSeason } from "@/server/services/value-batch";
+import { trackEvent } from "../services/analytics";
 
 const SALARY_CAP = 95_500_000;
 const CURRENT_SEASON_END = 2026;
@@ -196,6 +197,8 @@ export const tradeRouter = router({
           notes: input.notes,
         },
       });
+
+      trackEvent("TRADE_SAVED", userId, { tradeId: scenario.id, name: input.name });
 
       return { id: scenario.id };
     }),

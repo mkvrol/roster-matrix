@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
+import { usePageView } from "@/lib/use-track";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/page-header";
@@ -158,6 +159,7 @@ function fmtDate(date: string | Date): string {
 // ── Main page ──
 
 export default function ReportsPage() {
+  usePageView("/reports");
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
 
   if (selectedReportId) {

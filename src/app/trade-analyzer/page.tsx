@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
+import { usePageView } from "@/lib/use-track";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/page-header";
@@ -68,6 +69,7 @@ const SALARY_CAP = 95_500_000;
 // ── Main page ──
 
 export default function TradeAnalyzerPage() {
+  usePageView("/trade-analyzer");
   const [sideA, setSideA] = useState<TradeSide>({
     teamId: null,
     players: [],

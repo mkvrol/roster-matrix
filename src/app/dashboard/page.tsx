@@ -11,10 +11,12 @@ import { DataTable } from "@/components/ui/data-table";
 import type { Column } from "@/components/ui/data-table";
 import { TrendingUp, TrendingDown, Clock, Activity } from "lucide-react";
 import { OnboardingTrigger } from "@/components/tour/onboarding-trigger";
+import { usePageView } from "@/lib/use-track";
 
 // ── Main page ──
 
 export default function DashboardPage() {
+  usePageView("/dashboard");
   return (
     <div className="space-y-6">
       <OnboardingTrigger />

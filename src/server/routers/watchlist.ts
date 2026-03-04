@@ -7,6 +7,7 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { getLatestSeason } from "@/server/services/value-batch";
+import { trackEvent } from "../services/analytics";
 
 // ── Helpers ──
 
@@ -206,6 +207,8 @@ export const watchlistRouter = router({
         },
       });
 
+      trackEvent("WATCHLIST_ADDED", userId, { playerId: input.playerId, watchListId: input.watchListId });
+
       return { success: true };
     }),
 
@@ -236,6 +239,8 @@ export const watchlistRouter = router({
           },
         },
       });
+
+      trackEvent("WATCHLIST_REMOVED", userId, { playerId: input.playerId, watchListId: input.watchListId });
 
       return { success: true };
     }),

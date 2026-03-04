@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
+import { usePageView } from "@/lib/use-track";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/page-header";
 import {
@@ -18,6 +19,7 @@ import {
 } from "lucide-react";
 
 export default function BriefingPage() {
+  usePageView("/briefing");
   const { data: teams } = trpc.league.getTeams.useQuery(undefined, {
     staleTime: 60 * 60 * 1000,
   });

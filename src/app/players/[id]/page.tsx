@@ -2244,12 +2244,14 @@ function CapHitBreakdown({
   const STROKE = 9;
   const circumference = 2 * Math.PI * R;
 
-  function capPctColor(pct: number, future: boolean): string {
+  function valueScoreColor(score: number | null, future: boolean): string {
     if (future) return "rgba(100,116,139,0.35)";
-    if (pct >= 15) return "#ef4444";
-    if (pct >= 10) return "#f59e0b";
-    if (pct >= 5) return "#3b82f6";
-    return "#10b981";
+    if (score == null) return "#64748b";
+    if (score >= 85) return "#22c55e";
+    if (score >= 70) return "#3b82f6";
+    if (score >= 55) return "#eab308";
+    if (score >= 40) return "#f97316";
+    return "#ef4444";
   }
 
   return (
@@ -2265,7 +2267,7 @@ function CapHitBreakdown({
           const isCurrent = year === currentSeasonKey;
           const isFuture = startYear >= CURRENT_SEASON_END;
 
-          const arcColor = capPctColor(pct, isFuture);
+          const arcColor = valueScoreColor(vs?.score ?? null, isFuture);
 
           return (
             <div
@@ -2291,7 +2293,7 @@ function CapHitBreakdown({
                   cy={50}
                   r={R}
                   fill="none"
-                  stroke="#1e293b"
+                  stroke="#334155"
                   strokeWidth={STROKE}
                 />
                 <circle
@@ -2344,18 +2346,21 @@ function CapHitBreakdown({
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-data-xs text-text-muted">
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" /> &lt;5%
+          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#22c55e" }} /> Elite 85+
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500" /> 5–10%
+          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#3b82f6" }} /> Strong 70–84
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-amber-500" /> 10–15%
+          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#eab308" }} /> Fair 55–69
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-red-500" /> &gt;15%
+          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#f97316" }} /> Below 40–54
         </span>
-        <span className="ml-auto">Arc = AAV as % of salary cap</span>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#ef4444" }} /> Overpaid &lt;40
+        </span>
+        <span className="ml-auto">Arc = cap usage · Color = value score</span>
       </div>
     </Card>
   );

@@ -2240,7 +2240,17 @@ function CapHitBreakdown({
 
   const currentSeasonKey = `${CURRENT_SEASON_START}-${String(CURRENT_SEASON_END).slice(2)}`;
 
-  const circumference = 2 * Math.PI * 32;
+  const R = 38;
+  const STROKE = 9;
+  const circumference = 2 * Math.PI * R;
+
+  function capPctColor(pct: number, future: boolean): string {
+    if (future) return "rgba(100,116,139,0.35)";
+    if (pct >= 15) return "#ef4444";
+    if (pct >= 10) return "#f59e0b";
+    if (pct >= 5) return "#3b82f6";
+    return "#10b981";
+  }
 
   return (
     <Card title="Year-by-Year Cap Hit">
@@ -2255,11 +2265,7 @@ function CapHitBreakdown({
           const isCurrent = year === currentSeasonKey;
           const isFuture = startYear >= CURRENT_SEASON_END;
 
-          const strokeColor = isCurrent
-            ? "var(--color-accent, #6366f1)"
-            : isFuture
-              ? "rgba(99,102,241,0.4)"
-              : "#10b981";
+          const arcColor = capPctColor(pct, isFuture);
 
           return (
             <div
@@ -2279,35 +2285,45 @@ function CapHitBreakdown({
                 {year}
               </span>
 
-              <svg viewBox="0 0 80 80" className="my-1.5 h-16 w-16">
+              <svg viewBox="0 0 100 100" className="my-1.5 h-[88px] w-[88px]">
                 <circle
-                  cx={40}
-                  cy={40}
-                  r={32}
+                  cx={50}
+                  cy={50}
+                  r={R}
                   fill="none"
                   stroke="#1e293b"
-                  strokeWidth={6}
+                  strokeWidth={STROKE}
                 />
                 <circle
-                  cx={40}
-                  cy={40}
-                  r={32}
+                  cx={50}
+                  cy={50}
+                  r={R}
                   fill="none"
-                  stroke={strokeColor}
-                  strokeWidth={6}
+                  stroke={arcColor}
+                  strokeWidth={STROKE}
                   strokeLinecap="round"
                   strokeDasharray={circumference}
                   strokeDashoffset={dashOffset}
-                  transform="rotate(-90 40 40)"
+                  transform="rotate(-90 50 50)"
                 />
                 <text
-                  x={40}
-                  y={40}
+                  x={50}
+                  y={44}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  className="fill-text-primary font-mono text-[10px] font-semibold"
+                  className="fill-text-primary font-mono text-[11px] font-bold"
                 >
                   {fmtCap(amount)}
+                </text>
+                <text
+                  x={50}
+                  y={60}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  className="font-mono text-[10px] font-semibold"
+                  fill={arcColor}
+                >
+                  {pct.toFixed(1)}%
                 </text>
               </svg>
 
@@ -2328,15 +2344,18 @@ function CapHitBreakdown({
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-data-xs text-text-muted">
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" /> Past
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" /> &lt;5%
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent" /> Current
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500" /> 5–10%
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent/40" /> Future
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-amber-500" /> 10–15%
         </span>
-        <span className="ml-auto">Donut fill = AAV as % of salary cap</span>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-red-500" /> &gt;15%
+        </span>
+        <span className="ml-auto">Arc = AAV as % of salary cap</span>
       </div>
     </Card>
   );

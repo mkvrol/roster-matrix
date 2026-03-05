@@ -365,7 +365,7 @@ export const playerRouter = router({
             take: 1,
           },
           impactStats: {
-            where: { season },
+            orderBy: { season: "desc" as const },
             take: 1,
           },
           valueScores: {

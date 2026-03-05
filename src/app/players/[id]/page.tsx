@@ -1691,7 +1691,7 @@ function ImpactTab({ profile }: { profile: Profile }) {
   const imp = profile.impactStats;
   const isGoalie = profile.position === "G";
 
-  if (!imp) {
+  if (!imp && !profile.careerImpactStats) {
     return (
       <Card title="Win Impact">
         <p className="py-10 text-center text-data-sm text-text-muted">
@@ -1701,14 +1701,14 @@ function ImpactTab({ profile }: { profile: Profile }) {
     );
   }
 
-  const diffPct = imp.winPctDifferential != null ? imp.winPctDifferential * 100 : null;
+  const diffPct = imp?.winPctDifferential != null ? imp.winPctDifferential * 100 : null;
   const diffPositive = diffPct != null && diffPct > 0;
   const diffNegative = diffPct != null && diffPct < 0;
 
   return (
     <div className="space-y-6">
       {/* Impact Card — headline summary */}
-      <div className="rounded-md border border-border-subtle bg-surface-1 p-5">
+      {imp && <div className="rounded-md border border-border-subtle bg-surface-1 p-5">
         <div className="flex items-start gap-4">
           <div
             className={cn(
@@ -1756,10 +1756,10 @@ function ImpactTab({ profile }: { profile: Profile }) {
             )}
           </div>
         </div>
-      </div>
+      </div>}
 
       {/* Record Comparison + Win % */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      {imp && <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card title="Team Record Comparison" icon={Users}>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -1848,10 +1848,10 @@ function ImpactTab({ profile }: { profile: Profile }) {
             )}
           </div>
         </Card>
-      </div>
+      </div>}
 
       {/* Clutch + High Impact */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      {imp && <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card title="Clutch Performance" icon={Sparkles}>
           <div className="space-y-4">
             {imp.clutchRating != null && (
@@ -1968,7 +1968,7 @@ function ImpactTab({ profile }: { profile: Profile }) {
             </div>
           </Card>
         )}
-      </div>
+      </div>}
 
       {/* Career Impact Summary */}
       {profile.careerImpactStats && (

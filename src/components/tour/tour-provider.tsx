@@ -25,14 +25,38 @@ export function useTour() {
   return useContext(TourContext);
 }
 
+// lg breakpoint — below this the sidebar is hidden behind hamburger
+const MOBILE_BREAKPOINT = 1024;
+
+/** Check if a DOMRect is actually visible in the viewport */
+function isRectVisible(rect: DOMRect): boolean {
+  return (
+    rect.width > 0 &&
+    rect.height > 0 &&
+    rect.right > 0 &&
+    rect.bottom > 0 &&
+    rect.left < window.innerWidth &&
+    rect.top < window.innerHeight
+  );
+}
+
 export function TourProvider({ children }: { children: React.ReactNode }) {
   const [active, setActive] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const [dontShow, setDontShow] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval>>();
 
   const step = TOUR_STEPS[stepIndex];
+
+  // Track mobile state
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const dismiss = useCallback(() => {
     setActive(false);
@@ -69,20 +93,31 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
     if (pollRef.current) clearInterval(pollRef.current);
 
+    // On mobile, skip anchor positioning entirely — always use centered card
+    if (isMobile) {
+      setTargetRect(null);
+      return;
+    }
+
     let attempts = 0;
     const maxAttempts = 30; // 3 seconds
 
     const find = () => {
       const el = document.querySelector(step.selector);
       if (el) {
-        setTargetRect(el.getBoundingClientRect());
-        if (pollRef.current) clearInterval(pollRef.current);
-      } else if (attempts >= maxAttempts) {
-        // Fallback: center tooltip
+        const rect = el.getBoundingClientRect();
+        if (isRectVisible(rect)) {
+          setTargetRect(rect);
+          if (pollRef.current) clearInterval(pollRef.current);
+          return;
+        }
+      }
+      attempts++;
+      if (attempts >= maxAttempts) {
+        // Element not found or not visible — use centered fallback
         setTargetRect(null);
         if (pollRef.current) clearInterval(pollRef.current);
       }
-      attempts++;
     };
 
     find();
@@ -91,15 +126,22 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [active, step, stepIndex]);
+  }, [active, step, stepIndex, isMobile]);
 
-  // Update position on scroll/resize
+  // Update position on scroll/resize (desktop only)
   useEffect(() => {
-    if (!active) return;
+    if (!active || isMobile) return;
     const update = () => {
       if (!step) return;
       const el = document.querySelector(step.selector);
-      if (el) setTargetRect(el.getBoundingClientRect());
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (isRectVisible(rect)) {
+          setTargetRect(rect);
+        } else {
+          setTargetRect(null);
+        }
+      }
     };
     window.addEventListener("resize", update);
     window.addEventListener("scroll", update, true);
@@ -107,7 +149,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener("resize", update);
       window.removeEventListener("scroll", update, true);
     };
-  }, [active, step]);
+  }, [active, step, isMobile]);
 
   // Escape key to dismiss
   useEffect(() => {
@@ -128,6 +170,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
         totalSteps={TOUR_STEPS.length}
         targetRect={targetRect}
         dontShow={dontShow}
+        isMobile={isMobile}
         onDontShowChange={setDontShow}
         onNext={next}
         onPrev={prev}
@@ -143,6 +186,7 @@ function TourOverlay({
   totalSteps,
   targetRect,
   dontShow,
+  isMobile,
   onDontShowChange,
   onNext,
   onPrev,
@@ -153,15 +197,19 @@ function TourOverlay({
   totalSteps: number;
   targetRect: DOMRect | null;
   dontShow: boolean;
+  isMobile: boolean;
   onDontShowChange: (v: boolean) => void;
   onNext: () => void;
   onPrev: () => void;
   onDismiss: () => void;
 }) {
   const isLast = stepIndex === totalSteps - 1;
+  const isCentered = isMobile || !targetRect;
 
   // Calculate tooltip position
-  const tooltipStyle = getTooltipPosition(targetRect, step.placement);
+  const tooltipStyle = isCentered
+    ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)" } as React.CSSProperties
+    : getTooltipPosition(targetRect!, step.placement);
 
   return (
     <div className="fixed inset-0 z-[9999]">
@@ -171,8 +219,8 @@ function TourOverlay({
         onClick={onDismiss}
       />
 
-      {/* Target highlight */}
-      {targetRect && (
+      {/* Target highlight — desktop only when element is visible */}
+      {targetRect && !isMobile && (
         <div
           className="absolute rounded-md ring-2 ring-accent"
           style={{
@@ -187,9 +235,13 @@ function TourOverlay({
         />
       )}
 
-      {/* Tooltip */}
+      {/* Tooltip / Card */}
       <div
-        className="absolute z-10 w-80 rounded-lg border border-border-subtle bg-surface-1 p-4 shadow-xl"
+        className={
+          isCentered
+            ? "absolute z-10 w-[min(360px,calc(100vw-32px))] rounded-lg border border-border-subtle bg-surface-1 p-5 shadow-xl"
+            : "absolute z-10 w-80 rounded-lg border border-border-subtle bg-surface-1 p-4 shadow-xl"
+        }
         style={tooltipStyle}
       >
         {/* Header */}
@@ -198,20 +250,27 @@ function TourOverlay({
             <span className="rounded bg-accent/20 px-1.5 py-0.5 text-data-xs font-medium text-accent">
               {stepIndex + 1} of {totalSteps}
             </span>
-            <h3 className="mt-1.5 text-sm font-semibold text-text-primary">
+            <h3 className={isCentered
+              ? "mt-2 text-base font-semibold text-text-primary"
+              : "mt-1.5 text-sm font-semibold text-text-primary"
+            }>
               {step.title}
             </h3>
           </div>
           <button
             onClick={onDismiss}
-            className="rounded p-0.5 text-text-muted transition-colors hover:text-text-secondary"
+            className="rounded p-1 text-text-muted transition-colors hover:bg-surface-2 hover:text-text-secondary"
+            aria-label="Close tour"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Body */}
-        <p className="text-data-sm leading-relaxed text-text-secondary">
+        <p className={isCentered
+          ? "text-data-sm leading-relaxed text-text-secondary"
+          : "text-data-sm leading-relaxed text-text-secondary"
+        }>
           {step.body}
         </p>
 
@@ -259,18 +318,9 @@ function TourOverlay({
 }
 
 function getTooltipPosition(
-  rect: DOMRect | null,
+  rect: DOMRect,
   placement?: "top" | "bottom" | "left" | "right",
 ): React.CSSProperties {
-  if (!rect) {
-    // Fallback: center of screen
-    return {
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-    };
-  }
-
   const gap = 12;
   const tooltipWidth = 320;
 

@@ -36,13 +36,6 @@ export const TOUR_STEPS: TourStep[] = [
     placement: "right",
   },
   {
-    id: "nav-briefing",
-    title: "AI-Powered Briefing",
-    body: "Get a GM-style briefing with natural language queries, trade recommendations, and market analysis — all powered by AI.",
-    selector: '[data-tour="nav-briefing"]',
-    placement: "right",
-  },
-  {
     id: "nav-watchlist",
     title: "Watch Lists & Alerts",
     body: "Track players you're interested in. Create custom lists, monitor value score changes, and get notified when deals shift.",

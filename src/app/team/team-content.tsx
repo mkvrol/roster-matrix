@@ -17,6 +17,9 @@ import {
   Loader2,
   Calendar,
   AlertTriangle,
+  Sparkles,
+  RefreshCw,
+  FileText,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -142,6 +145,7 @@ export function TeamPageContent({ initialAbbrev }: { initialAbbrev?: string }) {
   const transactions = trpc.team.getTransactions.useQuery({ teamId: teamId! }, { enabled: !!teamId });
   const injuries = trpc.team.getInjuries.useQuery({ teamId: teamId! }, { enabled: !!teamId });
   const draftPicks = trpc.team.getDraftPicks.useQuery({ teamId: teamId! }, { enabled: !!teamId });
+  const briefing = trpc.ai.generateBriefing.useMutation();
 
   const isLoading =
     !teamId ||
@@ -210,46 +214,142 @@ export function TeamPageContent({ initialAbbrev }: { initialAbbrev?: string }) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-        <StatCard label="Total Cap Hit" value={fmtCap(ov.cap.totalCapHit)} />
-        <StatCard
-          label="Cap Space"
-          value={fmtCap(ov.cap.capSpace)}
-          valueClass={ov.cap.capSpace >= 0 ? "text-success" : "text-danger"}
-        />
-        <StatCard label="Active Contracts" value={String(ov.cap.activeContracts)} />
-        <StatCard label="Expiring This Year" value={String(ov.cap.expiringThisYear)} />
-        <StatCard label="Expiring Next Year" value={String(ov.cap.expiringNextYear)} />
-        <StatCard label="Projected Next Year Cap" value={fmtCap(ov.cap.projectedCapNextYear)} />
-      </div>
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_1fr]">
+        {/* Left column: Cap Overview */}
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+            <StatCard label="Total Cap Hit" value={fmtCap(ov.cap.totalCapHit)} />
+            <StatCard
+              label="Cap Space"
+              value={fmtCap(ov.cap.capSpace)}
+              valueClass={ov.cap.capSpace >= 0 ? "text-success" : "text-danger"}
+            />
+            <StatCard label="Active Contracts" value={String(ov.cap.activeContracts)} />
+            <StatCard label="Expiring This Year" value={String(ov.cap.expiringThisYear)} />
+            <StatCard label="Expiring Next Year" value={String(ov.cap.expiringNextYear)} />
+            <StatCard label="Projected Next Year Cap" value={fmtCap(ov.cap.projectedCapNextYear)} />
+          </div>
 
-      <div className="rounded-md border border-border-subtle bg-surface-1 p-4">
-        <h3 className="text-sm font-semibold text-text-primary">Cap Breakdown by Position</h3>
-        <div className="mt-3 h-16">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={capBarData} layout="vertical" barCategoryGap={0}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={false} />
-              <XAxis type="number" hide domain={[0, Math.max(ov.cap.totalCapHit * 1.05, 95_000_000)]} />
-              <YAxis type="category" dataKey="name" hide />
-              <RechartsTooltip
-                contentStyle={{ backgroundColor: "#1a1a2e", border: "1px solid #333", borderRadius: "4px" }}
-                labelStyle={{ color: "#aaa" }}
-                formatter={(value: number, name: string) => [fmtCap(value), name]}
-              />
-              <Bar dataKey="F" stackId="a" fill="#3b82f6" name="Forwards" />
-              <Bar dataKey="D" stackId="a" fill="#10b981" name="Defense" />
-              <Bar dataKey="G" stackId="a" fill="#f59e0b" name="Goalies" />
-              <ReferenceLine x={70_600_000} stroke="#ef4444" strokeDasharray="5 5" strokeWidth={1.5} />
-              <ReferenceLine x={95_500_000} stroke="#f97316" strokeDasharray="5 5" strokeWidth={1.5} />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="rounded-md border border-border-subtle bg-surface-1 p-4">
+            <h3 className="text-sm font-semibold text-text-primary">Cap Breakdown by Position</h3>
+            <div className="mt-3 h-16">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={capBarData} layout="vertical" barCategoryGap={0}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={false} />
+                  <XAxis type="number" hide domain={[0, Math.max(ov.cap.totalCapHit * 1.05, 95_000_000)]} />
+                  <YAxis type="category" dataKey="name" hide />
+                  <RechartsTooltip
+                    contentStyle={{ backgroundColor: "#1a1a2e", border: "1px solid #333", borderRadius: "4px" }}
+                    labelStyle={{ color: "#aaa" }}
+                    formatter={(value: number, name: string) => [fmtCap(value), name]}
+                  />
+                  <Bar dataKey="F" stackId="a" fill="#3b82f6" name="Forwards" />
+                  <Bar dataKey="D" stackId="a" fill="#10b981" name="Defense" />
+                  <Bar dataKey="G" stackId="a" fill="#f59e0b" name="Goalies" />
+                  <ReferenceLine x={70_600_000} stroke="#ef4444" strokeDasharray="5 5" strokeWidth={1.5} />
+                  <ReferenceLine x={95_500_000} stroke="#f97316" strokeDasharray="5 5" strokeWidth={1.5} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="mt-2 flex gap-4 text-data-xs text-text-muted">
+              <span className="flex items-center gap-1"><span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#3b82f6]" />F: {fmtCap(ov.cap.capByPosition.F)}</span>
+              <span className="flex items-center gap-1"><span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#10b981]" />D: {fmtCap(ov.cap.capByPosition.D)}</span>
+              <span className="flex items-center gap-1"><span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#f59e0b]" />G: {fmtCap(ov.cap.capByPosition.G)}</span>
+              <span className="flex items-center gap-1"><span className="inline-block h-0.5 w-4 border-t-2 border-dashed border-[#ef4444]" />Floor: $70.6M</span>
+              <span className="flex items-center gap-1"><span className="inline-block h-0.5 w-4 border-t-2 border-dashed border-[#f97316]" />Cap: $95.5M</span>
+            </div>
+          </div>
         </div>
-        <div className="mt-2 flex gap-4 text-data-xs text-text-muted">
-          <span className="flex items-center gap-1"><span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#3b82f6]" />F: {fmtCap(ov.cap.capByPosition.F)}</span>
-          <span className="flex items-center gap-1"><span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#10b981]" />D: {fmtCap(ov.cap.capByPosition.D)}</span>
-          <span className="flex items-center gap-1"><span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#f59e0b]" />G: {fmtCap(ov.cap.capByPosition.G)}</span>
-          <span className="flex items-center gap-1"><span className="inline-block h-0.5 w-4 border-t-2 border-dashed border-[#ef4444]" />Floor: $70.6M</span>
-          <span className="flex items-center gap-1"><span className="inline-block h-0.5 w-4 border-t-2 border-dashed border-[#f97316]" />Cap: $95.5M</span>
+
+        {/* Right column: Team Briefing */}
+        <div className="rounded-md border border-border-subtle bg-surface-1 flex flex-col">
+          <div className="flex items-center justify-between border-b border-border-subtle px-4 py-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-accent" />
+              <h3 className="text-sm font-semibold text-text-primary">Team Briefing</h3>
+            </div>
+            {briefing.data && (
+              <div className="flex items-center gap-2">
+                <span className="text-data-xs text-text-muted">
+                  {new Date(briefing.data.generatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                </span>
+                <button
+                  onClick={() => briefing.mutate({ teamId: teamId! })}
+                  disabled={briefing.isPending}
+                  className="rounded p-1.5 text-text-muted transition-colors hover:bg-surface-2 hover:text-text-secondary"
+                  aria-label="Regenerate briefing"
+                >
+                  <RefreshCw className={cn("h-3.5 w-3.5", briefing.isPending && "animate-spin")} />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Briefing content area */}
+          <div className="flex-1 overflow-y-auto p-4" style={{ maxHeight: "400px" }}>
+            {briefing.isPending && (
+              <div className="flex flex-col items-center justify-center py-12">
+                <Loader2 className="mb-3 h-6 w-6 animate-spin text-accent" />
+                <p className="text-data-sm text-text-muted">Generating intelligence report...</p>
+              </div>
+            )}
+
+            {briefing.isError && (
+              <div className="rounded-md border border-danger/30 bg-danger-muted px-4 py-3">
+                <p className="text-data-sm text-danger">{briefing.error.message}</p>
+              </div>
+            )}
+
+            {briefing.data && !briefing.isPending && (
+              <div className="space-y-4">
+                {/* Summary row */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="rounded bg-surface-2 p-2 text-center">
+                    <p className="text-data-xs text-text-muted">Roster</p>
+                    <p className="font-mono text-sm font-semibold text-text-primary">{briefing.data.summary.rosterSize}</p>
+                  </div>
+                  <div className="rounded bg-surface-2 p-2 text-center">
+                    <p className="text-data-xs text-text-muted">Outperformers</p>
+                    <p className="font-mono text-sm font-semibold text-success">{briefing.data.summary.outperformers}</p>
+                  </div>
+                  <div className="rounded bg-surface-2 p-2 text-center">
+                    <p className="text-data-xs text-text-muted">Underperformers</p>
+                    <p className="font-mono text-sm font-semibold text-danger">{briefing.data.summary.underperformers}</p>
+                  </div>
+                </div>
+
+                {/* Briefing text */}
+                <div className="prose prose-invert prose-sm max-w-none">
+                  <BriefingContent content={briefing.data.briefing} />
+                </div>
+
+                {/* AI disclaimer */}
+                <div className="flex items-center gap-2 rounded bg-surface-2 px-3 py-2">
+                  <Sparkles className="h-3 w-3 shrink-0 text-accent" />
+                  <p className="text-[10px] text-text-muted">
+                    Generated by Claude AI. Validate recommendations with your analytics team.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {!briefing.data && !briefing.isPending && !briefing.isError && (
+              <div className="flex flex-col items-center justify-center py-10">
+                <Sparkles className="mb-3 h-8 w-8 text-text-muted" />
+                <p className="mb-1 text-sm font-medium text-text-primary">AI Intelligence Report</p>
+                <p className="mb-4 max-w-xs text-center text-data-xs text-text-muted">
+                  Generate an executive briefing covering roster value, trade opportunities, and cap outlook.
+                </p>
+                <button
+                  onClick={() => briefing.mutate({ teamId: teamId! })}
+                  className="flex items-center gap-2 rounded-md bg-accent px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Generate Briefing
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -625,4 +725,68 @@ function DraftPickGrid({ data }: { data: DraftPicksData }) {
       </div>
     </div>
   );
+}
+
+function BriefingContent({ content }: { content: string }) {
+  const lines = content.split("\n");
+  const elements: React.ReactNode[] = [];
+
+  lines.forEach((line, i) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      elements.push(<br key={i} />);
+    } else if (trimmed.startsWith("## ")) {
+      elements.push(
+        <h2 key={i} className="mb-2 mt-6 text-base font-semibold text-text-primary first:mt-0">
+          {trimmed.replace("## ", "")}
+        </h2>,
+      );
+    } else if (trimmed.startsWith("# ")) {
+      elements.push(
+        <h1 key={i} className="mb-3 mt-6 text-lg font-bold text-text-primary first:mt-0">
+          {trimmed.replace("# ", "")}
+        </h1>,
+      );
+    } else if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+      elements.push(
+        <p key={i} className="mt-4 font-semibold text-text-primary">
+          {trimmed.replace(/\*\*/g, "")}
+        </p>,
+      );
+    } else if (trimmed.startsWith("- ") || trimmed.startsWith("• ")) {
+      elements.push(
+        <li key={i} className="ml-4 text-text-secondary">
+          {formatInlineBold(trimmed.replace(/^[-•]\s*/, ""))}
+        </li>,
+      );
+    } else if (/^\d+\.\s/.test(trimmed)) {
+      elements.push(
+        <li key={i} className="ml-4 list-decimal text-text-secondary">
+          {formatInlineBold(trimmed.replace(/^\d+\.\s*/, ""))}
+        </li>,
+      );
+    } else {
+      elements.push(
+        <p key={i} className="text-text-secondary leading-relaxed">
+          {formatInlineBold(trimmed)}
+        </p>,
+      );
+    }
+  });
+
+  return <>{elements}</>;
+}
+
+function formatInlineBold(text: string): React.ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <strong key={i} className="font-semibold text-text-primary">
+          {part.replace(/\*\*/g, "")}
+        </strong>
+      );
+    }
+    return part;
+  });
 }

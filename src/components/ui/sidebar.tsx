@@ -21,7 +21,6 @@ import {
   GitCompareArrows,
   ClipboardList,
   Shield,
-  Sparkles,
   MessageSquare,
   Building2,
   Menu,
@@ -32,7 +31,6 @@ import {
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/briefing", label: "Team Briefing", icon: Sparkles, tourId: "nav-briefing" },
   { href: "/scout", label: "AI Scout", icon: MessageSquare },
   { href: "/players", label: "Players", icon: Users },
   { href: "/team", label: "Teams", icon: Building2 },

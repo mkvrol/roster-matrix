@@ -9,7 +9,7 @@ import { ValueBadge } from "@/components/ui/value-badge";
 import { TeamLogo } from "@/components/ui/team-logo";
 import { DataTable } from "@/components/ui/data-table";
 import type { Column } from "@/components/ui/data-table";
-import { TrendingUp, TrendingDown, Clock, Activity } from "lucide-react";
+import { TrendingUp, TrendingDown, Clock, Activity, ArrowLeftRight, Award } from "lucide-react";
 import { OnboardingTrigger } from "@/components/tour/onboarding-trigger";
 import { usePageView } from "@/lib/use-track";
 
@@ -40,6 +40,7 @@ export default function DashboardPage() {
           <TradeAlertFeed />
         </div>
       </div>
+      <LeagueTransactions />
     </div>
   );
 }
@@ -547,6 +548,110 @@ function TradeAlertFeed() {
             </span>
           </button>
         ))}
+      </div>
+    </SectionCard>
+  );
+}
+
+// ── League Transactions ──
+
+const TX_COLORS: Record<string, { bg: string; text: string }> = {
+  TRADE: { bg: "bg-info-muted", text: "text-info" },
+  SIGNING: { bg: "bg-success-muted", text: "text-success" },
+  WAIVER: { bg: "bg-warning-muted", text: "text-warning" },
+  RECALL: { bg: "bg-purple-muted", text: "text-purple" },
+};
+
+type RecentTransaction = {
+  id: string;
+  type: string;
+  description: string;
+  playersInvolved: unknown;
+  date: Date;
+  team: { id: string; name: string; abbreviation: string };
+};
+
+function LeagueTransactions() {
+  const { data, isLoading } = trpc.dashboard.getRecentTransactions.useQuery(
+    undefined,
+    { staleTime: 5 * 60 * 1000 },
+  ) as { data: RecentTransaction[] | undefined; isLoading: boolean };
+  const router = useRouter();
+
+  if (isLoading) {
+    return (
+      <SectionCard title="League Transactions" icon={ArrowLeftRight}>
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-10 animate-pulse rounded bg-surface-2"
+            />
+          ))}
+        </div>
+      </SectionCard>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <SectionCard title="League Transactions" icon={ArrowLeftRight}>
+        <EmptyState text="No recent transactions" />
+      </SectionCard>
+    );
+  }
+
+  return (
+    <SectionCard title="League Transactions" icon={ArrowLeftRight}>
+      <div className="max-h-[400px] space-y-1 overflow-y-auto">
+        {data.map((tx) => {
+          const colors = TX_COLORS[tx.type] ?? {
+            bg: "bg-surface-2",
+            text: "text-text-muted",
+          };
+          return (
+            <div
+              key={tx.id}
+              className="flex items-center gap-3 rounded px-1.5 py-2 transition-colors hover:bg-surface-2"
+            >
+              <span className="w-16 shrink-0 text-data-xs text-text-muted">
+                {new Date(tx.date).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })}
+              </span>
+              <div className="flex shrink-0 items-center gap-1.5">
+                <TeamLogo teamAbbrev={tx.team.abbreviation} size="sm" />
+                <span className="text-data-xs font-medium text-text-secondary">
+                  {tx.team.abbreviation}
+                </span>
+              </div>
+              <span
+                className={cn(
+                  "shrink-0 rounded px-1.5 py-0.5 text-data-xs font-medium",
+                  colors.bg,
+                  colors.text,
+                )}
+              >
+                {tx.type}
+              </span>
+              <span className="min-w-0 flex-1 truncate text-data-sm text-text-secondary">
+                {tx.description}
+              </span>
+              {tx.type === "TRADE" && (
+                <button
+                  onClick={() =>
+                    router.push(`/trade-analyzer?gradeTradeId=${tx.id}`)
+                  }
+                  className="flex shrink-0 items-center gap-1 rounded bg-accent/10 px-2 py-1 text-data-xs font-medium text-accent transition-colors hover:bg-accent/20"
+                >
+                  <Award className="h-3 w-3" />
+                  Grade
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
     </SectionCard>
   );

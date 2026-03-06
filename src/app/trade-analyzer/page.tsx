@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef, useMemo, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "@/lib/trpc";
 import { usePageView } from "@/lib/use-track";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ import {
   Sparkles,
   Loader2,
   Target,
+  Award,
 } from "lucide-react";
 
 // ── Types ──
@@ -69,7 +70,17 @@ const SALARY_CAP = 95_500_000;
 // ── Main page ──
 
 export default function TradeAnalyzerPage() {
+  return (
+    <Suspense>
+      <TradeAnalyzerContent />
+    </Suspense>
+  );
+}
+
+function TradeAnalyzerContent() {
   usePageView("/trade-analyzer");
+  const searchParams = useSearchParams();
+  const gradeTradeId = searchParams.get("gradeTradeId");
   const [sideA, setSideA] = useState<TradeSide>({
     teamId: null,
     players: [],
@@ -216,6 +227,11 @@ export default function TradeAnalyzerPage() {
           sideB={sideB}
           onClose={() => setSaveOpen(false)}
         />
+      )}
+
+      {/* Trade Grade Modal */}
+      {gradeTradeId && (
+        <TradeGradePanel transactionId={gradeTradeId} />
       )}
     </div>
   );
@@ -1581,6 +1597,241 @@ function AITradeBoard({ teamId }: { teamId: string }) {
             </span>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ── Trade Grade Panel (modal) ──
+
+function getGradeColor(grade: string): string {
+  const letter = grade.charAt(0);
+  if (letter === "A") return "#10b981";
+  if (letter === "B") return "#60a5fa";
+  if (letter === "C") return "#fbbf24";
+  if (letter === "D") return "#f97316";
+  return "#ef4444";
+}
+
+function TradeGradePanel({ transactionId }: { transactionId: string }) {
+  const router = useRouter();
+  const gradeMutation = trpc.ai.gradeTrade.useMutation();
+
+  useEffect(() => {
+    gradeMutation.mutate({ transactionId });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactionId]);
+
+  const handleClose = () => {
+    // Remove the query param
+    router.push("/trade-analyzer");
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="relative mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-border-subtle bg-surface-1 shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-border-subtle px-6 py-4">
+          <div className="flex items-center gap-2">
+            <Award className="h-5 w-5 text-accent" />
+            <h2 className="text-lg font-semibold text-text-primary">
+              Trade Grade
+            </h2>
+          </div>
+          <button
+            onClick={handleClose}
+            className="rounded p-1.5 text-text-muted transition-colors hover:bg-surface-2 hover:text-text-secondary"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          {gradeMutation.isPending && (
+            <div className="flex flex-col items-center justify-center py-16">
+              <Loader2 className="mb-3 h-8 w-8 animate-spin text-accent" />
+              <p className="text-data-sm text-text-muted">
+                AI is grading this trade...
+              </p>
+            </div>
+          )}
+
+          {gradeMutation.isError && (
+            <div className="rounded-md border border-danger/30 bg-danger-muted px-4 py-3">
+              <p className="text-data-sm text-danger">
+                {gradeMutation.error.message}
+              </p>
+            </div>
+          )}
+
+          {gradeMutation.data && (
+            <div className="space-y-6">
+              {/* Transaction description */}
+              <p className="text-data-sm text-text-secondary">
+                {gradeMutation.data.transaction.description}
+              </p>
+
+              {/* Team grades */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Team A */}
+                <div className="rounded-lg border border-border-subtle bg-surface-0 p-4 text-center">
+                  <TeamLogo
+                    teamAbbrev={gradeMutation.data.teamA.abbreviation}
+                    size="lg"
+                  />
+                  <p className="mt-2 text-data-sm font-medium text-text-primary">
+                    {gradeMutation.data.teamA.abbreviation}
+                  </p>
+                  <p
+                    className="mt-1 text-4xl font-bold"
+                    style={{
+                      color: getGradeColor(gradeMutation.data.teamA.grade),
+                    }}
+                  >
+                    {gradeMutation.data.teamA.grade}
+                  </p>
+                  {gradeMutation.data.teamA.cap && (
+                    <p className="mt-1 text-data-xs text-text-muted">
+                      Cap space: {fmtCap(gradeMutation.data.teamA.cap.capSpace)}
+                    </p>
+                  )}
+                </div>
+
+                {/* Team B */}
+                <div className="rounded-lg border border-border-subtle bg-surface-0 p-4 text-center">
+                  <TeamLogo
+                    teamAbbrev={gradeMutation.data.teamB.abbreviation}
+                    size="lg"
+                  />
+                  <p className="mt-2 text-data-sm font-medium text-text-primary">
+                    {gradeMutation.data.teamB.abbreviation}
+                  </p>
+                  <p
+                    className="mt-1 text-4xl font-bold"
+                    style={{
+                      color: getGradeColor(gradeMutation.data.teamB.grade),
+                    }}
+                  >
+                    {gradeMutation.data.teamB.grade}
+                  </p>
+                  {gradeMutation.data.teamB.cap && (
+                    <p className="mt-1 text-data-xs text-text-muted">
+                      Cap space: {fmtCap(gradeMutation.data.teamB.cap.capSpace)}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Winner badge */}
+              <div className="flex items-center justify-center gap-2 rounded-md bg-accent/10 px-4 py-2">
+                <Target className="h-4 w-4 text-accent" />
+                <span className="text-data-sm font-medium text-accent">
+                  Winner: {gradeMutation.data.winner}
+                </span>
+              </div>
+
+              {/* Players involved */}
+              {gradeMutation.data.players.length > 0 && (
+                <div>
+                  <h4 className="mb-2 text-data-xs font-medium uppercase tracking-wider text-text-muted">
+                    Players Involved
+                  </h4>
+                  <div className="space-y-1.5">
+                    {gradeMutation.data.players.map((p) => (
+                      <div
+                        key={p.name}
+                        className="flex items-center justify-between rounded bg-surface-0 px-3 py-1.5"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-data-sm font-medium text-text-primary">
+                            {p.name}
+                          </span>
+                          <span className="text-data-xs text-text-muted">
+                            {p.pos} · {p.team}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="font-mono text-data-xs text-text-muted">
+                            {fmtCap(p.aav)}
+                          </span>
+                          {p.score !== null && (
+                            <span
+                              className="font-mono text-data-sm font-semibold"
+                              style={{ color: getScoreColor(p.score) }}
+                            >
+                              {p.score}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Analysis */}
+              <div>
+                <h4 className="mb-2 text-data-xs font-medium uppercase tracking-wider text-text-muted">
+                  Analysis
+                </h4>
+                <p className="text-data-sm leading-relaxed text-text-secondary">
+                  {gradeMutation.data.analysis}
+                </p>
+              </div>
+
+              {/* Team outlooks */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <h4 className="mb-1 text-data-xs font-medium text-text-muted">
+                    {gradeMutation.data.teamA.abbreviation} Outlook
+                  </h4>
+                  <p className="text-data-sm text-text-secondary">
+                    {gradeMutation.data.teamA.outlook}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="mb-1 text-data-xs font-medium text-text-muted">
+                    {gradeMutation.data.teamB.abbreviation} Outlook
+                  </h4>
+                  <p className="text-data-sm text-text-secondary">
+                    {gradeMutation.data.teamB.outlook}
+                  </p>
+                </div>
+              </div>
+
+              {/* Short/Long term */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="rounded bg-surface-0 p-3">
+                  <h4 className="mb-1 flex items-center gap-1.5 text-data-xs font-medium text-text-muted">
+                    <TrendingUp className="h-3 w-3" />
+                    Short-Term Impact
+                  </h4>
+                  <p className="text-data-sm text-text-secondary">
+                    {gradeMutation.data.shortTerm}
+                  </p>
+                </div>
+                <div className="rounded bg-surface-0 p-3">
+                  <h4 className="mb-1 flex items-center gap-1.5 text-data-xs font-medium text-text-muted">
+                    <Calendar className="h-3 w-3" />
+                    Long-Term Impact
+                  </h4>
+                  <p className="text-data-sm text-text-secondary">
+                    {gradeMutation.data.longTerm}
+                  </p>
+                </div>
+              </div>
+
+              {/* AI disclaimer */}
+              <div className="flex items-center gap-2 rounded bg-surface-2 px-3 py-2">
+                <Sparkles className="h-3 w-3 shrink-0 text-accent" />
+                <p className="text-[10px] text-text-muted">
+                  Generated by Claude AI. Grades are analytical estimates, not definitive assessments.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

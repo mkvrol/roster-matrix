@@ -740,7 +740,218 @@ Be specific with dollar amounts throughout. Reference the salary cap ($95.5M) co
     }),
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 5. AI Scout Chat
+  // 5. Trade Grading
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  gradeTrade: protectedProcedure
+    .input(z.object({ transactionId: z.string() }))
+    .mutation(async ({ input }) => {
+      requireAI();
+      const season = await getLatestSeason();
+
+      const transaction = await prisma.transaction.findUniqueOrThrow({
+        where: { id: input.transactionId },
+        include: {
+          team: { select: { id: true, name: true, abbreviation: true } },
+        },
+      });
+
+      if (transaction.type !== "TRADE") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Only TRADE transactions can be graded.",
+        });
+      }
+
+      // Parse player names from description
+      // Typical: "Acquired Player Name from TEAM. Traded Player Name to TEAM."
+      const desc = transaction.description;
+      const acquiredMatches = Array.from(desc.matchAll(/Acquired\s+([A-Z][a-zA-Z'-]+(?:\s+[A-Z][a-zA-Z'-]+)+)/g));
+      const tradedMatches = Array.from(desc.matchAll(/Traded\s+([A-Z][a-zA-Z'-]+(?:\s+[A-Z][a-zA-Z'-]+)+)/g));
+      const playerNames = [
+        ...acquiredMatches.map((m) => m[1]),
+        ...tradedMatches.map((m) => m[1]),
+      ];
+
+      // Also try playersInvolved JSON field
+      const involved = transaction.playersInvolved as unknown;
+      let involvedNames: string[] = [];
+      if (Array.isArray(involved)) {
+        involvedNames = involved.map((p: { name?: string; fullName?: string }) =>
+          (p.name ?? p.fullName ?? "").trim()
+        ).filter(Boolean);
+      }
+
+      const allNames = Array.from(new Set([...playerNames, ...involvedNames]));
+
+      // Look up players in DB
+      const players = allNames.length > 0
+        ? await prisma.player.findMany({
+            where: {
+              OR: allNames.map((name) => ({ fullName: { contains: name } })),
+              isActive: true,
+            },
+            select: {
+              id: true,
+              fullName: true,
+              position: true,
+              birthDate: true,
+              currentTeam: { select: { id: true, name: true, abbreviation: true } },
+              contracts: {
+                orderBy: { startYear: "desc" as const },
+                take: 1,
+                select: { aav: true, endYear: true, hasNTC: true, hasNMC: true },
+              },
+              valueScores: {
+                where: { season },
+                orderBy: { calculatedAt: "desc" as const },
+                take: 1,
+                select: { overallScore: true, grade: true },
+              },
+              seasonStats: {
+                where: { season },
+                take: 1,
+                select: { gamesPlayed: true, goals: true, assists: true, points: true },
+              },
+            },
+          })
+        : [];
+
+      const playerData = players
+        .filter((p) => p.contracts.length > 0)
+        .map((p) => {
+          const c = p.contracts[0];
+          const v = p.valueScores[0];
+          const s = p.seasonStats[0];
+          return {
+            name: p.fullName,
+            pos: p.position,
+            age: getAge(p.birthDate),
+            team: p.currentTeam?.abbreviation ?? "FA",
+            teamId: p.currentTeam?.id ?? null,
+            teamName: p.currentTeam?.name ?? "Free Agent",
+            aav: Number(c.aav),
+            yearsLeft: Math.max(0, c.endYear - CURRENT_SEASON_END),
+            score: v?.overallScore ?? null,
+            grade: v?.grade ?? null,
+            ntc: c.hasNTC,
+            nmc: c.hasNMC,
+            gp: s?.gamesPlayed ?? 0,
+            pts: s?.points ?? 0,
+            g: s?.goals ?? 0,
+            a: s?.assists ?? 0,
+          };
+        });
+
+      // Identify the two teams involved
+      const teamA = transaction.team;
+      // Try to find team B from description or player data
+      const otherTeamMatch = desc.match(/(?:from|to)\s+(?:the\s+)?([A-Z]{2,3})/);
+      let teamB = otherTeamMatch
+        ? await prisma.team.findFirst({
+            where: { abbreviation: otherTeamMatch[1] },
+            select: { id: true, name: true, abbreviation: true },
+          })
+        : null;
+
+      // Fallback: find team B from player data
+      if (!teamB) {
+        const otherTeam = playerData.find((p) => p.teamId && p.teamId !== teamA.id);
+        if (otherTeam) {
+          teamB = { id: otherTeam.teamId!, name: otherTeam.teamName, abbreviation: otherTeam.team };
+        }
+      }
+
+      // Get cap situations for both teams
+      const getTeamCap = async (tId: string) => {
+        const contracts = await prisma.contract.findMany({
+          where: {
+            player: { currentTeamId: tId, isActive: true },
+            startYear: { lte: CURRENT_SEASON_END - 1 },
+            endYear: { gte: CURRENT_SEASON_END },
+          },
+          select: { aav: true },
+        });
+        const capHit = contracts.reduce((s, c) => s + Number(c.aav), 0);
+        return { capHit, capSpace: SALARY_CAP - capHit };
+      };
+
+      const teamACap = await getTeamCap(teamA.id);
+      const teamBCap = teamB ? await getTeamCap(teamB.id) : null;
+
+      const gradeResult = await generateJSON<{
+        teamAGrade: string;
+        teamBGrade: string;
+        winner: string;
+        analysis: string;
+        teamAOutlook: string;
+        teamBOutlook: string;
+        shortTerm: string;
+        longTerm: string;
+      }>(
+        `Grade this NHL trade.
+
+TRANSACTION: ${desc}
+
+TEAM A: ${teamA.name} (${teamA.abbreviation})
+Cap Hit: ${fmtAAV(teamACap.capHit)} | Cap Space: ${fmtAAV(teamACap.capSpace)}
+
+${teamB ? `TEAM B: ${teamB.name} (${teamB.abbreviation})\nCap Hit: ${teamBCap ? fmtAAV(teamBCap.capHit) : "N/A"} | Cap Space: ${teamBCap ? fmtAAV(teamBCap.capSpace) : "N/A"}` : "TEAM B: Unknown"}
+
+PLAYERS INVOLVED:
+${JSON.stringify(playerData, null, 0)}
+
+Return JSON with:
+- "teamAGrade": Letter grade for ${teamA.abbreviation} (A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F)
+- "teamBGrade": Letter grade for ${teamB?.abbreviation ?? "Team B"}
+- "winner": The abbreviation of the team that won the trade
+- "analysis": 3-4 sentence overall assessment of the trade
+- "teamAOutlook": What ${teamA.abbreviation} gains and loses from this trade (2-3 sentences)
+- "teamBOutlook": What ${teamB?.abbreviation ?? "Team B"} gains and loses (2-3 sentences)
+- "shortTerm": 1-sentence short-term impact assessment
+- "longTerm": 1-sentence long-term impact assessment
+
+Consider value scores, AAV, age, term, position need, and cap implications. Be specific with numbers.`,
+        { maxTokens: 2000 },
+      );
+
+      return {
+        transaction: {
+          id: transaction.id,
+          description: transaction.description,
+          date: transaction.date,
+        },
+        teamA: {
+          ...teamA,
+          cap: teamACap,
+          grade: gradeResult.teamAGrade,
+          outlook: gradeResult.teamAOutlook,
+        },
+        teamB: teamB
+          ? {
+              ...teamB,
+              cap: teamBCap,
+              grade: gradeResult.teamBGrade,
+              outlook: gradeResult.teamBOutlook,
+            }
+          : {
+              id: "unknown",
+              name: "Unknown Team",
+              abbreviation: "???",
+              cap: null,
+              grade: gradeResult.teamBGrade,
+              outlook: gradeResult.teamBOutlook,
+            },
+        winner: gradeResult.winner,
+        analysis: gradeResult.analysis,
+        shortTerm: gradeResult.shortTerm,
+        longTerm: gradeResult.longTerm,
+        players: playerData,
+      };
+    }),
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 6. AI Scout Chat
   // Multi-turn conversational player search
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

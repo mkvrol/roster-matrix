@@ -256,6 +256,23 @@ export const dashboardRouter = router({
       return alerts.slice(0, input.limit);
     }),
 
+  // ── Recent league-wide transactions ──
+  getRecentTransactions: protectedProcedure.query(async () => {
+    const transactions = await prisma.transaction.findMany({
+      orderBy: { date: "desc" },
+      take: 20,
+      select: {
+        id: true,
+        type: true,
+        description: true,
+        playersInvolved: true,
+        date: true,
+        team: { select: { id: true, name: true, abbreviation: true } },
+      },
+    });
+    return transactions;
+  }),
+
   // ── Cap space breakdown for visual tracker ──
   getCapSummary: protectedProcedure.query(async ({ ctx }) => {
     const teamId = await getUserTeamId(ctx.session);

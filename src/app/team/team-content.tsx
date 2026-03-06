@@ -20,6 +20,7 @@ import {
   Sparkles,
   RefreshCw,
   FileText,
+  Award,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -387,13 +388,27 @@ export function TeamPageContent({ initialAbbrev }: { initialAbbrev?: string }) {
             <div className="space-y-3">
               {txData.map((tx: Transaction) => {
                 const colors = TX_COLORS[tx.type] ?? { bg: "bg-surface-2", text: "text-text-muted" };
+                const isTrade = tx.type === "TRADE";
                 return (
-                  <div key={tx.id} className="flex items-start gap-3">
+                  <div
+                    key={tx.id}
+                    className={cn(
+                      "flex items-start gap-3 rounded px-1.5 py-1.5",
+                      isTrade && "cursor-pointer transition-colors hover:bg-surface-2",
+                    )}
+                    onClick={isTrade ? () => router.push(`/trade-analyzer?gradeTradeId=${tx.id}`) : undefined}
+                  >
                     <span className="mt-0.5 shrink-0 text-data-xs text-text-muted">{fmtDate(tx.date)}</span>
                     <span className={cn("shrink-0 rounded px-1.5 py-0.5 text-data-xs font-medium", colors.bg, colors.text)}>
                       {tx.type}
                     </span>
-                    <span className="text-data-sm text-text-secondary">{tx.description}</span>
+                    <span className="min-w-0 flex-1 text-data-sm text-text-secondary">{tx.description}</span>
+                    {isTrade && (
+                      <span className="flex shrink-0 items-center gap-1 text-data-xs font-medium text-accent">
+                        <Award className="h-3 w-3" />
+                        Grade
+                      </span>
+                    )}
                   </div>
                 );
               })}

@@ -6,7 +6,7 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/page-header";
-import { Shield, Send, AlertTriangle, BarChart3, Search, X } from "lucide-react";
+import { Shield, Send, AlertTriangle, BarChart3, Search, X, RefreshCw, Users, Activity, Loader2 } from "lucide-react";
 
 const TYPE_LABELS: Record<string, { label: string; color: string }> = {
   SCORE_CHANGE: { label: "Score Changes", color: "text-info" },
@@ -207,6 +207,9 @@ export default function AdminPage() {
         </div>
       </div>
 
+      {/* Data Sync Controls */}
+      <DataSyncPanel toast={toast} />
+
       {/* Notification Stats */}
       <div className="rounded-md border border-border-subtle bg-surface-1 p-4">
         <div className="flex items-center gap-3 mb-4">
@@ -254,6 +257,93 @@ export default function AdminPage() {
           <p className="text-data-sm text-text-muted">Loading stats…</p>
         )}
       </div>
+    </div>
+  );
+}
+
+function DataSyncPanel({ toast }: { toast: ReturnType<typeof useToast>["toast"] }) {
+  const [rosterLoading, setRosterLoading] = useState(false);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [injuryLoading, setInjuryLoading] = useState(false);
+  const [lastResult, setLastResult] = useState<{ job: string; data: any } | null>(null);
+
+  const triggerSync = async (
+    path: string,
+    label: string,
+    setLoading: (v: boolean) => void,
+  ) => {
+    setLoading(true);
+    setLastResult(null);
+    try {
+      const res = await fetch(`/api/cron/${path}`);
+      const data = await res.json();
+      if (res.ok) {
+        toast({ variant: "success", title: `${label} completed` });
+        setLastResult({ job: label, data });
+      } else {
+        toast({ variant: "error", title: `${label} failed: ${data.error ?? "Unknown"}` });
+      }
+    } catch (error) {
+      toast({ variant: "error", title: `${label} failed: ${error instanceof Error ? error.message : "Network error"}` });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="rounded-md border border-border-subtle bg-surface-1 p-4">
+      <div className="flex items-center gap-3 mb-4">
+        <RefreshCw className="h-4 w-4 text-text-muted" />
+        <h3 className="text-sm font-medium text-text-primary">Data Sync</h3>
+        <span className="text-data-xs text-text-muted">Manually trigger cron jobs</span>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <button
+          onClick={() => triggerSync("roster-sync", "Roster Sync", setRosterLoading)}
+          disabled={rosterLoading || statsLoading || injuryLoading}
+          className="flex items-center gap-2 rounded border border-border-subtle bg-surface-2 px-4 py-3 text-data-sm font-medium text-text-primary transition-colors hover:bg-surface-3 disabled:opacity-50"
+        >
+          {rosterLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Users className="h-4 w-4 text-info" />}
+          <div className="text-left">
+            <p>Roster Sync</p>
+            <p className="text-data-xs font-normal text-text-muted">Rosters + trade detection</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => triggerSync("stats-sync", "Stats Sync", setStatsLoading)}
+          disabled={rosterLoading || statsLoading || injuryLoading}
+          className="flex items-center gap-2 rounded border border-border-subtle bg-surface-2 px-4 py-3 text-data-sm font-medium text-text-primary transition-colors hover:bg-surface-3 disabled:opacity-50"
+        >
+          {statsLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <BarChart3 className="h-4 w-4 text-success" />}
+          <div className="text-left">
+            <p>Stats Sync</p>
+            <p className="text-data-xs font-normal text-text-muted">Stats + value scores</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => triggerSync("injury-sync", "Injury Sync", setInjuryLoading)}
+          disabled={rosterLoading || statsLoading || injuryLoading}
+          className="flex items-center gap-2 rounded border border-border-subtle bg-surface-2 px-4 py-3 text-data-sm font-medium text-text-primary transition-colors hover:bg-surface-3 disabled:opacity-50"
+        >
+          {injuryLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Activity className="h-4 w-4 text-warning" />}
+          <div className="text-left">
+            <p>Injury Sync</p>
+            <p className="text-data-xs font-normal text-text-muted">Injury status updates</p>
+          </div>
+        </button>
+      </div>
+
+      {lastResult && (
+        <div className="mt-3 rounded bg-surface-2 p-3">
+          <p className="mb-1 text-data-xs font-medium text-text-secondary">{lastResult.job} Result:</p>
+          <pre className="max-h-32 overflow-auto text-data-xs text-text-muted">
+            {JSON.stringify(lastResult.data, null, 2)}
+          </pre>
+        </div>
+      )}
     </div>
   );
 }

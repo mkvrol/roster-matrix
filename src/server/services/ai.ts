@@ -109,8 +109,23 @@ export async function generateJSON<T>(
   );
 
   const block = response.content[0];
-  if (block.type === "text") return JSON.parse(block.text) as T;
-  throw new Error("Unexpected response format from AI");
+  if (block.type !== "text") throw new Error("Unexpected response format from AI");
+
+  let jsonText = block.text.trim();
+
+  // Strip markdown code fences if Claude wrapped the JSON
+  if (jsonText.startsWith("```")) {
+    jsonText = jsonText.replace(/^```(?:json)?\s*\n?/, "").replace(/\n?```\s*$/, "");
+  }
+
+  // Fallback: extract first JSON object from text with preamble
+  try {
+    return JSON.parse(jsonText) as T;
+  } catch {
+    const match = jsonText.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]) as T;
+    throw new Error("Failed to parse AI response as JSON");
+  }
 }
 
 export { MODEL, withRetry };

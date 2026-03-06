@@ -106,31 +106,25 @@ export async function GET(request: NextRequest) {
               const playerName = `${firstName} ${lastName}`;
               const today = new Date();
 
-              // Transaction on new team
+              // Single transaction per trade (on new team, referencing both)
               await prisma.transaction.create({
                 data: {
                   teamId: team.id,
                   type: "TRADE",
-                  description: `Acquired ${playerName} from ${oldTeam?.name ?? "Unknown"}`,
-                  playersInvolved: [{ playerId: existing.id, name: playerName }],
+                  description: `${playerName} traded from ${oldTeam?.abbreviation ?? "???"} to ${team.abbreviation}`,
+                  playersInvolved: [{
+                    playerId: existing.id,
+                    name: playerName,
+                    fromTeamId: oldTeam?.id ?? null,
+                    fromTeamAbbrev: oldTeam?.abbreviation ?? null,
+                    toTeamId: team.id,
+                    toTeamAbbrev: team.abbreviation,
+                  }],
                   date: today,
                 },
               });
 
-              // Transaction on old team
-              if (oldTeam) {
-                await prisma.transaction.create({
-                  data: {
-                    teamId: oldTeam.id,
-                    type: "TRADE",
-                    description: `Traded ${playerName} to ${team.name}`,
-                    playersInvolved: [{ playerId: existing.id, name: playerName }],
-                    date: today,
-                  },
-                });
-              }
-
-              result.transactionsCreated += oldTeam ? 2 : 1;
+              result.transactionsCreated += 1;
             }
           } else {
             await prisma.player.create({

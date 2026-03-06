@@ -9,7 +9,7 @@ import { ValueBadge } from "@/components/ui/value-badge";
 import { TeamLogo } from "@/components/ui/team-logo";
 import { DataTable } from "@/components/ui/data-table";
 import type { Column } from "@/components/ui/data-table";
-import { TrendingUp, TrendingDown, Clock, Activity, ArrowLeftRight, Award } from "lucide-react";
+import { Clock, ArrowLeftRight, ArrowRight, Award } from "lucide-react";
 import { OnboardingTrigger } from "@/components/tour/onboarding-trigger";
 import { usePageView } from "@/lib/use-track";
 
@@ -37,7 +37,6 @@ export default function DashboardPage() {
             <LeagueValueLeaders />
           </div>
           <ExpiringContractsWatch />
-          <TradeAlertFeed />
         </div>
       </div>
       <LeagueTransactions />
@@ -469,90 +468,6 @@ function ExpiringContractsWatch() {
   );
 }
 
-// ── Trade Alert Feed ──
-
-function TradeAlertFeed() {
-  const { data, isLoading } = trpc.dashboard.getValueAlerts.useQuery(
-    { limit: 8 },
-    { staleTime: 15 * 60 * 1000 },
-  );
-  const router = useRouter();
-
-  if (isLoading) {
-    return (
-      <SectionCard title="Trade Alert Feed" icon={Activity}>
-        <div className="space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-10 animate-pulse rounded bg-surface-2"
-            />
-          ))}
-        </div>
-      </SectionCard>
-    );
-  }
-
-  if (!data || data.length === 0) {
-    return (
-      <SectionCard title="Trade Alert Feed" icon={Activity}>
-        <EmptyState text="No significant value changes detected" />
-      </SectionCard>
-    );
-  }
-
-  return (
-    <SectionCard title="Trade Alert Feed" icon={Activity}>
-      <div className="space-y-1">
-        {data.map((alert) => (
-          <button
-            key={alert.playerId}
-            onClick={() => router.push(`/players/${alert.playerId}`)}
-            className="group flex w-full items-center gap-3 rounded px-1.5 py-1.5 text-left transition-colors hover:bg-surface-2"
-          >
-            <div
-              className={cn(
-                "flex h-7 w-7 shrink-0 items-center justify-center rounded",
-                alert.direction === "up"
-                  ? "bg-success-muted text-success"
-                  : "bg-danger-muted text-danger",
-              )}
-            >
-              {alert.direction === "up" ? (
-                <TrendingUp className="h-3.5 w-3.5" />
-              ) : (
-                <TrendingDown className="h-3.5 w-3.5" />
-              )}
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span className="truncate text-data-sm font-medium text-text-primary group-hover:text-accent">
-                  {alert.playerName}
-                </span>
-                <span className="shrink-0 text-data-xs text-text-muted">
-                  {alert.teamAbbreviation}
-                </span>
-              </div>
-              <p className="text-data-xs text-text-muted">
-                {alert.previousScore} → {alert.currentScore}
-              </p>
-            </div>
-            <span
-              className={cn(
-                "shrink-0 font-mono text-data-sm font-semibold tabular-nums",
-                alert.direction === "up" ? "text-success" : "text-danger",
-              )}
-            >
-              {alert.direction === "up" ? "+" : ""}
-              {alert.delta}
-            </span>
-          </button>
-        ))}
-      </div>
-    </SectionCard>
-  );
-}
-
 // ── League Transactions ──
 
 const TX_COLORS: Record<string, { bg: string; text: string }> = {
@@ -601,6 +516,13 @@ function LeagueTransactions() {
     );
   }
 
+  // Parse trade abbreviations from description ("X traded from AAA to BBB")
+  const parseTrade = (desc: string) => {
+    const m = desc.match(/^(.+?)\s+traded from\s+(\w+)\s+to\s+(\w+)$/);
+    if (m) return { playerName: m[1], from: m[2], to: m[3] };
+    return null;
+  };
+
   return (
     <SectionCard title="League Transactions" icon={ArrowLeftRight}>
       <div className="max-h-[400px] space-y-1 overflow-y-auto">
@@ -609,6 +531,8 @@ function LeagueTransactions() {
             bg: "bg-surface-2",
             text: "text-text-muted",
           };
+          const trade = tx.type === "TRADE" ? parseTrade(tx.description) : null;
+
           return (
             <div
               key={tx.id}
@@ -620,12 +544,20 @@ function LeagueTransactions() {
                   day: "numeric",
                 })}
               </span>
-              <div className="flex shrink-0 items-center gap-1.5">
-                <TeamLogo teamAbbrev={tx.team.abbreviation} size="sm" />
-                <span className="text-data-xs font-medium text-text-secondary">
-                  {tx.team.abbreviation}
-                </span>
-              </div>
+              {trade ? (
+                <div className="flex shrink-0 items-center gap-1">
+                  <TeamLogo teamAbbrev={trade.from} size="sm" />
+                  <ArrowRight className="h-3 w-3 text-text-muted" />
+                  <TeamLogo teamAbbrev={trade.to} size="sm" />
+                </div>
+              ) : (
+                <div className="flex shrink-0 items-center gap-1.5">
+                  <TeamLogo teamAbbrev={tx.team.abbreviation} size="sm" />
+                  <span className="text-data-xs font-medium text-text-secondary">
+                    {tx.team.abbreviation}
+                  </span>
+                </div>
+              )}
               <span
                 className={cn(
                   "shrink-0 rounded px-1.5 py-0.5 text-data-xs font-medium",

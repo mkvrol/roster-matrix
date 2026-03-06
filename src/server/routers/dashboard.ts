@@ -258,9 +258,9 @@ export const dashboardRouter = router({
 
   // ── Recent league-wide transactions ──
   getRecentTransactions: protectedProcedure.query(async () => {
-    const transactions = await prisma.transaction.findMany({
+    const raw = await prisma.transaction.findMany({
       orderBy: { date: "desc" },
-      take: 20,
+      take: 40,
       select: {
         id: true,
         type: true,
@@ -270,7 +270,80 @@ export const dashboardRouter = router({
         team: { select: { id: true, name: true, abbreviation: true } },
       },
     });
-    return transactions;
+
+    // Deduplicate old-style paired trade transactions (Acquired X / Traded X).
+    // Group by player name + date; keep the "Acquired" side as canonical and
+    // rewrite its description to the combined format.
+    const seen = new Set<string>();
+    const deduped: typeof raw = [];
+
+    for (const tx of raw) {
+      if (tx.type === "TRADE") {
+        // Extract player name from either old or new format
+        const oldMatch = tx.description.match(/(?:Acquired|Traded)\s+(.+?)(?:\s+(?:from|to)\s+)/);
+        const newMatch = tx.description.match(/^(.+?)\s+traded from/);
+        const playerName = newMatch?.[1] ?? oldMatch?.[1] ?? "";
+        const dateKey = new Date(tx.date).toISOString().slice(0, 10);
+        const dedupeKey = `${playerName}::${dateKey}`;
+
+        if (seen.has(dedupeKey)) continue;
+        seen.add(dedupeKey);
+
+        // Rewrite old "Acquired X from Y" to combined format
+        const acquiredMatch = tx.description.match(/^Acquired\s+(.+?)\s+from\s+(.+)$/);
+        if (acquiredMatch) {
+          const pName = acquiredMatch[1];
+          const fromTeam = acquiredMatch[2];
+          // Look up abbreviations from the paired transaction
+          const pair = raw.find(
+            (other) =>
+              other.id !== tx.id &&
+              other.type === "TRADE" &&
+              other.description.includes(pName) &&
+              new Date(other.date).toISOString().slice(0, 10) === dateKey,
+          );
+          const fromAbbrev = pair?.team.abbreviation ?? fromTeam;
+          const toAbbrev = tx.team.abbreviation;
+          deduped.push({
+            ...tx,
+            description: `${pName} traded from ${fromAbbrev} to ${toAbbrev}`,
+            playersInvolved: Array.isArray(tx.playersInvolved)
+              ? tx.playersInvolved
+              : [{ name: pName, fromTeamAbbrev: fromAbbrev, toTeamAbbrev: toAbbrev }],
+          });
+          continue;
+        }
+
+        // Old "Traded X to Y" format — skip if we haven't seen the Acquired side
+        const tradedMatch = tx.description.match(/^Traded\s+/);
+        if (tradedMatch) {
+          // This is the "other side" — dedupe key already prevents duplicates
+          // but if the Acquired side wasn't in the result, keep this one rewritten
+          const tradedFullMatch = tx.description.match(/^Traded\s+(.+?)\s+to\s+(.+)$/);
+          if (tradedFullMatch) {
+            const pName = tradedFullMatch[1];
+            const toTeam = tradedFullMatch[2];
+            const pair = raw.find(
+              (other) =>
+                other.id !== tx.id &&
+                other.type === "TRADE" &&
+                other.description.includes(pName) &&
+                new Date(other.date).toISOString().slice(0, 10) === dateKey,
+            );
+            const toAbbrev = pair?.team.abbreviation ?? toTeam;
+            deduped.push({
+              ...tx,
+              description: `${pName} traded from ${tx.team.abbreviation} to ${toAbbrev}`,
+            });
+            continue;
+          }
+        }
+      }
+
+      deduped.push(tx);
+    }
+
+    return deduped.slice(0, 20);
   }),
 
   // ── Cap space breakdown for visual tracker ──

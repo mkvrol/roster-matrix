@@ -9,7 +9,7 @@ import { ValueBadge } from "@/components/ui/value-badge";
 import { TeamLogo } from "@/components/ui/team-logo";
 import { DataTable } from "@/components/ui/data-table";
 import type { Column } from "@/components/ui/data-table";
-import { Clock, ArrowLeftRight, ArrowRight, Award } from "lucide-react";
+import { Clock, ArrowLeftRight, Award } from "lucide-react";
 import { OnboardingTrigger } from "@/components/tour/onboarding-trigger";
 import { usePageView } from "@/lib/use-track";
 
@@ -486,33 +486,142 @@ type RecentTransaction = {
   team: { id: string; name: string; abbreviation: string };
 };
 
-// Extract structured trade info from playersInvolved JSON (trade-sync format)
+type TradeSideInfo = {
+  abbreviation: string;
+  name: string;
+  sends: string[];
+};
+
 type TradeInfo = {
-  team1Abbrev: string;
-  team2Abbrev: string;
+  team1: TradeSideInfo;
+  team2: TradeSideInfo;
 };
 
 function getTradeInfo(tx: RecentTransaction): TradeInfo | null {
   if (tx.type !== "TRADE") return null;
 
-  // New trade-sync format: { team1: { abbreviation }, team2: { abbreviation } }
   const involved = tx.playersInvolved as Record<string, unknown> | null;
   if (involved && typeof involved === "object") {
-    const t1 = involved.team1 as Record<string, unknown> | undefined;
-    const t2 = involved.team2 as Record<string, unknown> | undefined;
+    const t1 = involved.team1 as TradeSideInfo | undefined;
+    const t2 = involved.team2 as TradeSideInfo | undefined;
     if (t1?.abbreviation && t2?.abbreviation) {
       return {
-        team1Abbrev: t1.abbreviation as string,
-        team2Abbrev: t2.abbreviation as string,
+        team1: {
+          abbreviation: t1.abbreviation,
+          name: t1.name ?? t1.abbreviation,
+          sends: Array.isArray(t1.sends) ? t1.sends : [],
+        },
+        team2: {
+          abbreviation: t2.abbreviation,
+          name: t2.name ?? t2.abbreviation,
+          sends: Array.isArray(t2.sends) ? t2.sends : [],
+        },
       };
     }
   }
 
   // Old roster-sync format: "X traded from AAA to BBB"
-  const m = tx.description.match(/traded from\s+(\w{2,3})\s+to\s+(\w{2,3})/);
-  if (m) return { team1Abbrev: m[1], team2Abbrev: m[2] };
+  const m = tx.description.match(/^(.+?)\s+traded from\s+(\w{2,3})\s+to\s+(\w{2,3})/);
+  if (m) {
+    return {
+      team1: { abbreviation: m[2], name: m[2], sends: [m[1]] },
+      team2: { abbreviation: m[3], name: m[3], sends: [] },
+    };
+  }
 
   return null;
+}
+
+function TradeCard({ tx, trade }: { tx: RecentTransaction; trade: TradeInfo }) {
+  const router = useRouter();
+
+  return (
+    <div className="rounded border border-border-subtle bg-surface-2 p-3">
+      {/* Header: date + teams */}
+      <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-data-xs text-text-muted">
+            {new Date(tx.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })}
+          </span>
+          <span className={cn("rounded px-1.5 py-0.5 text-data-xs font-medium", TX_COLORS.TRADE.bg, TX_COLORS.TRADE.text)}>
+            TRADE
+          </span>
+        </div>
+        <button
+          onClick={() => router.push(`/trade-analyzer?gradeTradeId=${tx.id}`)}
+          className="flex items-center gap-1 rounded bg-accent/10 px-2 py-1 text-data-xs font-medium text-accent transition-colors hover:bg-accent/20"
+        >
+          <Award className="h-3 w-3" />
+          Grade
+        </button>
+      </div>
+
+      {/* Team header row */}
+      <div className="mb-1.5 flex items-center justify-center gap-3">
+        <div className="flex items-center gap-1.5">
+          <TeamLogo teamAbbrev={trade.team1.abbreviation} size="sm" />
+          <span className="text-data-sm font-semibold text-text-primary">
+            {trade.team1.abbreviation}
+          </span>
+        </div>
+        <ArrowLeftRight className="h-3.5 w-3.5 text-text-muted" />
+        <div className="flex items-center gap-1.5">
+          <span className="text-data-sm font-semibold text-text-primary">
+            {trade.team2.abbreviation}
+          </span>
+          <TeamLogo teamAbbrev={trade.team2.abbreviation} size="sm" />
+        </div>
+      </div>
+
+      {/* Two-column sends */}
+      {(trade.team1.sends.length > 0 || trade.team2.sends.length > 0) && (
+        <div className="grid grid-cols-2 gap-3 border-t border-border-subtle pt-2">
+          <div>
+            <p className="mb-1 text-data-xs text-text-muted">
+              {trade.team1.abbreviation} sends:
+            </p>
+            <ul className="space-y-0.5">
+              {trade.team1.sends.map((item, i) => (
+                <li key={i} className="flex items-start gap-1 text-data-xs text-text-secondary">
+                  <span className="mt-0.5 text-text-muted">•</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+              {trade.team1.sends.length === 0 && (
+                <li className="text-data-xs italic text-text-muted">—</li>
+              )}
+            </ul>
+          </div>
+          <div>
+            <p className="mb-1 text-data-xs text-text-muted">
+              {trade.team2.abbreviation} sends:
+            </p>
+            <ul className="space-y-0.5">
+              {trade.team2.sends.map((item, i) => (
+                <li key={i} className="flex items-start gap-1 text-data-xs text-text-secondary">
+                  <span className="mt-0.5 text-text-muted">•</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+              {trade.team2.sends.length === 0 && (
+                <li className="text-data-xs italic text-text-muted">—</li>
+              )}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* Fallback: show headline if no sends parsed */}
+      {trade.team1.sends.length === 0 && trade.team2.sends.length === 0 && (
+        <p className="border-t border-border-subtle pt-2 text-data-xs text-text-secondary">
+          {tx.description.length > 100 ? tx.description.slice(0, 100) + "…" : tx.description}
+        </p>
+      )}
+    </div>
+  );
 }
 
 function LeagueTransactions() {
@@ -529,7 +638,7 @@ function LeagueTransactions() {
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="h-10 animate-pulse rounded bg-surface-2"
+              className="h-20 animate-pulse rounded bg-surface-2"
             />
           ))}
         </div>
@@ -547,13 +656,20 @@ function LeagueTransactions() {
 
   return (
     <SectionCard title="League Transactions" icon={ArrowLeftRight}>
-      <div className="max-h-[400px] space-y-1 overflow-y-auto">
+      <div className="max-h-[500px] space-y-2 overflow-y-auto">
         {data.map((tx) => {
+          const trade = getTradeInfo(tx);
+
+          // Trade cards get the two-column layout
+          if (trade) {
+            return <TradeCard key={tx.id} tx={tx} trade={trade} />;
+          }
+
+          // Non-trade: single-line format
           const colors = TX_COLORS[tx.type] ?? {
             bg: "bg-surface-2",
             text: "text-text-muted",
           };
-          const trade = getTradeInfo(tx);
 
           return (
             <div
@@ -566,20 +682,12 @@ function LeagueTransactions() {
                   day: "numeric",
                 })}
               </span>
-              {trade ? (
-                <div className="flex shrink-0 items-center gap-1">
-                  <TeamLogo teamAbbrev={trade.team1Abbrev} size="sm" />
-                  <ArrowRight className="h-3 w-3 text-text-muted" />
-                  <TeamLogo teamAbbrev={trade.team2Abbrev} size="sm" />
-                </div>
-              ) : (
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <TeamLogo teamAbbrev={tx.team.abbreviation} size="sm" />
-                  <span className="text-data-xs font-medium text-text-secondary">
-                    {tx.team.abbreviation}
-                  </span>
-                </div>
-              )}
+              <div className="flex shrink-0 items-center gap-1.5">
+                <TeamLogo teamAbbrev={tx.team.abbreviation} size="sm" />
+                <span className="text-data-xs font-medium text-text-secondary">
+                  {tx.team.abbreviation}
+                </span>
+              </div>
               <span
                 className={cn(
                   "shrink-0 rounded px-1.5 py-0.5 text-data-xs font-medium",
@@ -590,19 +698,8 @@ function LeagueTransactions() {
                 {tx.type}
               </span>
               <span className="min-w-0 flex-1 truncate text-data-sm text-text-secondary">
-                {tx.description}
+                {tx.description.length > 80 ? tx.description.slice(0, 80) + "…" : tx.description}
               </span>
-              {tx.type === "TRADE" && (
-                <button
-                  onClick={() =>
-                    router.push(`/trade-analyzer?gradeTradeId=${tx.id}`)
-                  }
-                  className="flex shrink-0 items-center gap-1 rounded bg-accent/10 px-2 py-1 text-data-xs font-medium text-accent transition-colors hover:bg-accent/20"
-                >
-                  <Award className="h-3 w-3" />
-                  Grade
-                </button>
-              )}
             </div>
           );
         })}

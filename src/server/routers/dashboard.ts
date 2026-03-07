@@ -260,7 +260,7 @@ export const dashboardRouter = router({
   getRecentTransactions: protectedProcedure.query(async () => {
     const raw = await prisma.transaction.findMany({
       orderBy: { date: "desc" },
-      take: 40,
+      take: 60,
       select: {
         id: true,
         type: true,
@@ -271,79 +271,127 @@ export const dashboardRouter = router({
       },
     });
 
-    // Deduplicate old-style paired trade transactions (Acquired X / Traded X).
-    // Group by player name + date; keep the "Acquired" side as canonical and
-    // rewrite its description to the combined format.
-    const seen = new Set<string>();
-    const deduped: typeof raw = [];
+    // Separate trade-sync (already structured) from roster-sync trades
+    const result: typeof raw = [];
+    const rosterTrades: (typeof raw)[number][] = [];
+    const usedIds = new Set<string>();
 
     for (const tx of raw) {
-      if (tx.type === "TRADE") {
-        // Extract player name from either old or new format
-        const oldMatch = tx.description.match(/(?:Acquired|Traded)\s+(.+?)(?:\s+(?:from|to)\s+)/);
-        const newMatch = tx.description.match(/^(.+?)\s+traded from/);
-        const playerName = newMatch?.[1] ?? oldMatch?.[1] ?? "";
-        const dateKey = new Date(tx.date).toISOString().slice(0, 10);
-        const dedupeKey = `${playerName}::${dateKey}`;
-
-        if (seen.has(dedupeKey)) continue;
-        seen.add(dedupeKey);
-
-        // Rewrite old "Acquired X from Y" to combined format
-        const acquiredMatch = tx.description.match(/^Acquired\s+(.+?)\s+from\s+(.+)$/);
-        if (acquiredMatch) {
-          const pName = acquiredMatch[1];
-          const fromTeam = acquiredMatch[2];
-          // Look up abbreviations from the paired transaction
-          const pair = raw.find(
-            (other) =>
-              other.id !== tx.id &&
-              other.type === "TRADE" &&
-              other.description.includes(pName) &&
-              new Date(other.date).toISOString().slice(0, 10) === dateKey,
-          );
-          const fromAbbrev = pair?.team.abbreviation ?? fromTeam;
-          const toAbbrev = tx.team.abbreviation;
-          deduped.push({
-            ...tx,
-            description: `${pName} traded from ${fromAbbrev} to ${toAbbrev}`,
-            playersInvolved: Array.isArray(tx.playersInvolved)
-              ? tx.playersInvolved
-              : [{ name: pName, fromTeamAbbrev: fromAbbrev, toTeamAbbrev: toAbbrev }],
-          });
-          continue;
-        }
-
-        // Old "Traded X to Y" format — skip if we haven't seen the Acquired side
-        const tradedMatch = tx.description.match(/^Traded\s+/);
-        if (tradedMatch) {
-          // This is the "other side" — dedupe key already prevents duplicates
-          // but if the Acquired side wasn't in the result, keep this one rewritten
-          const tradedFullMatch = tx.description.match(/^Traded\s+(.+?)\s+to\s+(.+)$/);
-          if (tradedFullMatch) {
-            const pName = tradedFullMatch[1];
-            const toTeam = tradedFullMatch[2];
-            const pair = raw.find(
-              (other) =>
-                other.id !== tx.id &&
-                other.type === "TRADE" &&
-                other.description.includes(pName) &&
-                new Date(other.date).toISOString().slice(0, 10) === dateKey,
-            );
-            const toAbbrev = pair?.team.abbreviation ?? toTeam;
-            deduped.push({
-              ...tx,
-              description: `${pName} traded from ${tx.team.abbreviation} to ${toAbbrev}`,
-            });
-            continue;
-          }
-        }
+      if (tx.type !== "TRADE") {
+        result.push(tx);
+        continue;
       }
 
-      deduped.push(tx);
+      // Trade-sync format has team1/team2 with sends arrays
+      const involved = tx.playersInvolved as Record<string, unknown> | null;
+      if (involved && typeof involved === "object" && "team1" in involved && "team2" in involved) {
+        result.push(tx);
+        usedIds.add(tx.id);
+        continue;
+      }
+
+      // Roster-sync trade — collect for merging
+      rosterTrades.push(tx);
     }
 
-    return deduped.slice(0, 20);
+    // Merge roster-sync trades: group by date + team pair
+    // Extract player name and from/to team from description formats:
+    //   "PlayerName traded from AAA to BBB"
+    //   "Acquired PlayerName from TeamName"
+    //   "Traded PlayerName to TeamName"
+    type ParsedRosterTrade = {
+      tx: (typeof raw)[number];
+      playerName: string;
+      fromAbbrev: string;
+      toAbbrev: string;
+      dateKey: string;
+    };
+
+    const parsed: ParsedRosterTrade[] = [];
+    for (const tx of rosterTrades) {
+      const dateKey = new Date(tx.date).toISOString().slice(0, 10);
+      const desc = tx.description;
+
+      const newFmt = desc.match(/^(.+?)\s+traded from\s+(\w{2,3})\s+to\s+(\w{2,3})/);
+      if (newFmt) {
+        parsed.push({ tx, playerName: newFmt[1], fromAbbrev: newFmt[2], toAbbrev: newFmt[3], dateKey });
+        continue;
+      }
+
+      const acqFmt = desc.match(/^Acquired\s+(.+?)\s+from\s+(.+)$/);
+      if (acqFmt) {
+        // "to" team is this transaction's team
+        const fromPair = rosterTrades.find(
+          (o) => o.id !== tx.id && o.type === "TRADE" &&
+            o.description.includes(acqFmt[1]) &&
+            new Date(o.date).toISOString().slice(0, 10) === dateKey,
+        );
+        const fromAbbrev = fromPair?.team.abbreviation ?? acqFmt[2].slice(0, 3).toUpperCase();
+        parsed.push({ tx, playerName: acqFmt[1], fromAbbrev, toAbbrev: tx.team.abbreviation, dateKey });
+        continue;
+      }
+
+      const trdFmt = desc.match(/^Traded\s+(.+?)\s+to\s+(.+)$/);
+      if (trdFmt) {
+        const toPair = rosterTrades.find(
+          (o) => o.id !== tx.id && o.type === "TRADE" &&
+            o.description.includes(trdFmt[1]) &&
+            new Date(o.date).toISOString().slice(0, 10) === dateKey,
+        );
+        const toAbbrev = toPair?.team.abbreviation ?? trdFmt[2].slice(0, 3).toUpperCase();
+        parsed.push({ tx, playerName: trdFmt[1], fromAbbrev: tx.team.abbreviation, toAbbrev, dateKey });
+        continue;
+      }
+
+      // Unknown format — pass through
+      result.push(tx);
+    }
+
+    // Group by date + sorted team pair to find multi-player swaps
+    const tradeGroups = new Map<string, ParsedRosterTrade[]>();
+    for (const p of parsed) {
+      const teamPair = [p.fromAbbrev, p.toAbbrev].sort().join("-");
+      const key = `${p.dateKey}::${teamPair}`;
+      const group = tradeGroups.get(key) ?? [];
+      group.push(p);
+      tradeGroups.set(key, group);
+    }
+
+    for (const [, group] of Array.from(tradeGroups)) {
+      // Pick the two teams
+      const teamA = group[0].fromAbbrev;
+      const teamB = group[0].toAbbrev;
+
+      // Players team A sends (went from A to B)
+      const teamASends = group
+        .filter((p: ParsedRosterTrade) => p.fromAbbrev === teamA)
+        .map((p: ParsedRosterTrade) => p.playerName);
+      // Players team B sends (went from B to A)
+      const teamBSends = group
+        .filter((p: ParsedRosterTrade) => p.fromAbbrev === teamB)
+        .map((p: ParsedRosterTrade) => p.playerName);
+
+      // If only one side has players, the other side likely sent draft pick(s)
+      if (teamASends.length > 0 && teamBSends.length === 0) {
+        teamBSends.push("Draft pick(s)");
+      } else if (teamBSends.length > 0 && teamASends.length === 0) {
+        teamASends.push("Draft pick(s)");
+      }
+
+      const firstTx = group[0].tx;
+      result.push({
+        ...firstTx,
+        description: firstTx.description,
+        playersInvolved: {
+          team1: { abbreviation: teamA, name: teamA, sends: teamASends },
+          team2: { abbreviation: teamB, name: teamB, sends: teamBSends },
+        },
+      });
+    }
+
+    // Sort by date descending
+    result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return result.slice(0, 25);
   }),
 
   // ── Cap space breakdown for visual tracker ──

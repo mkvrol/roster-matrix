@@ -523,6 +523,17 @@ function getTradeInfo(tx: RecentTransaction): TradeInfo | null {
   return null;
 }
 
+function formatSends(sends: string[]): string {
+  if (sends.length === 0) return "TBD";
+  return sends
+    .map((s) =>
+      s.replace(/\bRound\s+/i, "R")
+        .replace(/\bCond\.\s*/i, "C.")
+        .replace(/\(\d{4}\)/g, (m) => m) // keep year
+    )
+    .join(", ");
+}
+
 function LeagueTransactions() {
   const { data, isLoading } = trpc.dashboard.getRecentTransactions.useQuery(
     undefined,
@@ -533,9 +544,9 @@ function LeagueTransactions() {
   if (isLoading) {
     return (
       <SectionCard title="League Transactions" icon={ArrowLeftRight}>
-        <div className="space-y-1">
+        <div className="space-y-0.5">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-10 animate-pulse rounded bg-surface-2" />
+            <div key={i} className="h-8 animate-pulse rounded bg-surface-2" />
           ))}
         </div>
       </SectionCard>
@@ -550,48 +561,42 @@ function LeagueTransactions() {
     );
   }
 
+  const needsScroll = data.length > 15;
+
   return (
     <SectionCard title="League Transactions" icon={ArrowLeftRight}>
-      <div className="max-h-[480px] divide-y divide-border-subtle overflow-y-auto">
+      <div className={cn("divide-y divide-border-subtle", needsScroll && "max-h-[480px] overflow-y-auto")}>
         {data.map((tx) => {
           const trade = getTradeInfo(tx);
 
           if (trade) {
-            const t1Sends = trade.team1.sends.length > 0 ? trade.team1.sends.join(", ") : "—";
-            const t2Sends = trade.team2.sends.length > 0 ? trade.team2.sends.join(", ") : "—";
+            const t1Text = formatSends(trade.team1.sends);
+            const t2Text = formatSends(trade.team2.sends);
+            const t1Full = trade.team1.sends.join(", ");
+            const t2Full = trade.team2.sends.join(", ");
 
             return (
               <div
                 key={tx.id}
-                className="flex items-center gap-2 py-2 transition-colors hover:bg-surface-2/50"
+                className="flex items-center gap-1.5 py-1.5 text-data-xs transition-colors hover:bg-surface-2/50"
               >
-                <span className="w-12 shrink-0 text-data-xs text-text-muted">
+                <span className="w-10 shrink-0 text-text-muted">
                   {new Date(tx.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                 </span>
-                {/* Team 1 side */}
-                <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                <div className="flex min-w-0 flex-1 items-center gap-1" title={`${trade.team1.abbreviation}: ${t1Full}`}>
                   <TeamLogo teamAbbrev={trade.team1.abbreviation} size="sm" />
-                  <span className="shrink-0 text-data-xs font-semibold text-text-primary">
-                    {trade.team1.abbreviation}
-                  </span>
-                  <span className="min-w-0 truncate text-data-xs text-text-secondary" title={t1Sends}>
-                    {t1Sends}
-                  </span>
+                  <span className="font-semibold text-text-primary">{trade.team1.abbreviation}:</span>
+                  <span className="min-w-0 truncate text-text-secondary">{t1Text}</span>
                 </div>
-                <ArrowLeftRight className="h-3 w-3 shrink-0 text-text-muted" />
-                {/* Team 2 side */}
-                <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                <span className="shrink-0 text-text-muted">⇄</span>
+                <div className="flex min-w-0 flex-1 items-center gap-1" title={`${trade.team2.abbreviation}: ${t2Full}`}>
                   <TeamLogo teamAbbrev={trade.team2.abbreviation} size="sm" />
-                  <span className="shrink-0 text-data-xs font-semibold text-text-primary">
-                    {trade.team2.abbreviation}
-                  </span>
-                  <span className="min-w-0 truncate text-data-xs text-text-secondary" title={t2Sends}>
-                    {t2Sends}
-                  </span>
+                  <span className="font-semibold text-text-primary">{trade.team2.abbreviation}:</span>
+                  <span className="min-w-0 truncate text-text-secondary">{t2Text}</span>
                 </div>
                 <button
                   onClick={() => router.push(`/trade-analyzer?gradeTradeId=${tx.id}`)}
-                  className="shrink-0 rounded bg-accent/10 px-1.5 py-0.5 text-data-xs font-medium text-accent transition-colors hover:bg-accent/20"
+                  className="shrink-0 rounded bg-accent/10 px-1.5 py-0.5 font-medium text-accent transition-colors hover:bg-accent/20"
                 >
                   Grade
                 </button>
@@ -605,19 +610,19 @@ function LeagueTransactions() {
           return (
             <div
               key={tx.id}
-              className="flex items-center gap-2 py-2 transition-colors hover:bg-surface-2/50"
+              className="flex items-center gap-1.5 py-1.5 text-data-xs transition-colors hover:bg-surface-2/50"
             >
-              <span className="w-12 shrink-0 text-data-xs text-text-muted">
+              <span className="w-10 shrink-0 text-text-muted">
                 {new Date(tx.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
               </span>
               <TeamLogo teamAbbrev={tx.team.abbreviation} size="sm" />
-              <span className="shrink-0 text-data-xs font-medium text-text-secondary">
+              <span className="shrink-0 font-medium text-text-secondary">
                 {tx.team.abbreviation}
               </span>
-              <span className={cn("shrink-0 rounded px-1 py-0.5 text-data-xs font-medium", colors.bg, colors.text)}>
+              <span className={cn("shrink-0 rounded px-1 py-0.5 font-medium", colors.bg, colors.text)}>
                 {tx.type}
               </span>
-              <span className="min-w-0 flex-1 truncate text-data-xs text-text-secondary">
+              <span className="min-w-0 flex-1 truncate text-text-secondary">
                 {tx.description.length > 80 ? tx.description.slice(0, 80) + "…" : tx.description}
               </span>
             </div>

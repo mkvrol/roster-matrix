@@ -4,6 +4,7 @@
 // ──────────────────────────────────────────────
 
 import { prisma } from "@/lib/prisma";
+import { generateJSON, isAIEnabled } from "@/server/services/ai";
 
 const FORGE_API =
   "https://forge-dapi.d3.nhle.com/v2/content/en-us/stories";
@@ -79,13 +80,12 @@ function parseTradeSides(
   const tradeText = sentences
     .filter(
       (s) =>
-        !s.startsWith('"') &&
-        !s.startsWith("The ") &&
-        !s.includes("season") &&
-        !s.includes("said") ||
         s.includes("traded") ||
         s.includes("received") ||
-        s.includes(" for "),
+        s.includes(" for ") ||
+        (!s.startsWith('"') &&
+         !s.includes("season") &&
+         !s.includes("said")),
     )
     .slice(0, 3)
     .join(" ");
@@ -239,16 +239,62 @@ function parseAssets(text: string): string[] {
  * Main sync function: fetch trades from NHL, match teams/players in DB,
  * create Transaction records with structured two-sided trade data.
  */
+/**
+ * Use AI to fill in missing trade return details for incomplete trades.
+ * Makes a single batch call with all incomplete trades to minimize API usage.
+ */
+async function enrichIncompleteTrades(
+  trades: Array<{
+    id: string;
+    description: string;
+    team1Abbrev: string;
+    team2Abbrev: string;
+    team1Sends: string[];
+    team2Sends: string[];
+  }>,
+): Promise<Map<string, string[]>> {
+  if (!isAIEnabled() || trades.length === 0) return new Map();
+
+  const tradeList = trades.map((t) => {
+    const knownSide = t.team1Sends.length > 0
+      ? `${t.team1Abbrev} sends: ${t.team1Sends.join(", ")}`
+      : `${t.team2Abbrev} sends: ${t.team2Sends.join(", ")}`;
+    return `- "${t.description}" (${knownSide}, other side unknown)`;
+  }).join("\n");
+
+  try {
+    const result = await generateJSON<Array<{
+      id: string;
+      returnAssets: string[];
+    }>>(
+      `You are an NHL trade expert. Here are recent NHL trades where we only know one side of the deal. For each trade, tell me what was sent in return based on your knowledge of these trades.\n\nTrades:\n${tradeList}\n\nRespond with a JSON array. For each trade, provide the return assets (player names, draft picks like "2027 2nd", etc.). Use short formats: "2027 1st", "Cond. 2026 3rd", player last names for well-known players. IDs: ${trades.map((t) => `"${t.id}"`).join(", ")}\n\nFormat: [{"id": "...", "returnAssets": ["2027 2nd", "Player Name"]}]`,
+      { maxTokens: 1024 },
+    );
+    const map = new Map<string, string[]>();
+    for (const item of result) {
+      if (item.id && Array.isArray(item.returnAssets)) {
+        map.set(item.id, item.returnAssets);
+      }
+    }
+    return map;
+  } catch (err) {
+    console.error("[TradeSync] AI enrichment failed:", err);
+    return new Map();
+  }
+}
+
 export async function syncTrades(): Promise<{
   tradesFound: number;
   tradesCreated: number;
   skipped: number;
+  enriched: number;
   errors: string[];
 }> {
   const result = {
     tradesFound: 0,
     tradesCreated: 0,
     skipped: 0,
+    enriched: 0,
     errors: [] as string[],
   };
 
@@ -278,6 +324,16 @@ export async function syncTrades(): Promise<{
       existingSlugs.add(involved.sourceSlug as string);
     }
   }
+
+  // Track trades that need AI enrichment (one side is empty)
+  const incompleteTrades: Array<{
+    id: string;
+    description: string;
+    team1Abbrev: string;
+    team2Abbrev: string;
+    team1Sends: string[];
+    team2Sends: string[];
+  }> = [];
 
   for (const story of stories) {
     if (existingSlugs.has(story.slug)) {
@@ -340,7 +396,7 @@ export async function syncTrades(): Promise<{
       });
     }
 
-    await prisma.transaction.create({
+    const created = await prisma.transaction.create({
       data: {
         teamId: dbTeam1.id,
         type: "TRADE",
@@ -364,8 +420,132 @@ export async function syncTrades(): Promise<{
       },
     });
 
+    // Track if one side is empty for AI enrichment
+    if (
+      (team1Sends.length === 0 && team2Sends.length > 0) ||
+      (team2Sends.length === 0 && team1Sends.length > 0)
+    ) {
+      incompleteTrades.push({
+        id: created.id,
+        description: story.headline,
+        team1Abbrev: dbTeam1.abbreviation,
+        team2Abbrev: dbTeam2.abbreviation,
+        team1Sends,
+        team2Sends,
+      });
+    }
+
     result.tradesCreated++;
   }
 
+  // AI enrichment: fill in missing sides for incomplete trades
+  if (incompleteTrades.length > 0) {
+    const enrichments = await enrichIncompleteTrades(incompleteTrades);
+    for (const trade of incompleteTrades) {
+      const returnAssets = enrichments.get(trade.id);
+      if (!returnAssets || returnAssets.length === 0) continue;
+
+      // Fetch current data to update the empty side
+      const tx = await prisma.transaction.findUnique({
+        where: { id: trade.id },
+        select: { playersInvolved: true },
+      });
+      if (!tx) continue;
+
+      const involved = tx.playersInvolved as Record<string, Record<string, unknown>>;
+      if (trade.team1Sends.length === 0) {
+        involved.team1.sends = returnAssets;
+      } else {
+        involved.team2.sends = returnAssets;
+      }
+
+      await prisma.transaction.update({
+        where: { id: trade.id },
+        data: { playersInvolved: JSON.parse(JSON.stringify(involved)) },
+      });
+      result.enriched++;
+    }
+  }
+
+  // Also enrich any existing roster-sync trades that lack structured data
+  await enrichRosterSyncTrades(since);
+
   return result;
+}
+
+/**
+ * Find roster-sync trades (no team1/team2 structure) and enrich them with AI.
+ */
+async function enrichRosterSyncTrades(since: Date): Promise<void> {
+  if (!isAIEnabled()) return;
+
+  const rosterTrades = await prisma.transaction.findMany({
+    where: { type: "TRADE", date: { gte: since } },
+    select: {
+      id: true,
+      description: true,
+      playersInvolved: true,
+      team: { select: { abbreviation: true } },
+    },
+  });
+
+  // Find trades that only have roster-sync format (no team1/team2 structure)
+  // and where one side is missing or has "Draft pick(s)"
+  const needsEnrichment: Array<{
+    id: string;
+    description: string;
+    team1Abbrev: string;
+    team2Abbrev: string;
+    team1Sends: string[];
+    team2Sends: string[];
+  }> = [];
+
+  for (const tx of rosterTrades) {
+    const involved = tx.playersInvolved as Record<string, unknown> | null;
+    if (!involved || typeof involved !== "object") continue;
+    if (!("team1" in involved) || !("team2" in involved)) continue;
+
+    const t1 = involved.team1 as { abbreviation: string; sends: string[] };
+    const t2 = involved.team2 as { abbreviation: string; sends: string[] };
+
+    const t1Empty = !t1.sends || t1.sends.length === 0 || (t1.sends.length === 1 && t1.sends[0] === "Draft pick(s)");
+    const t2Empty = !t2.sends || t2.sends.length === 0 || (t2.sends.length === 1 && t2.sends[0] === "Draft pick(s)");
+
+    if ((t1Empty && !t2Empty) || (t2Empty && !t1Empty)) {
+      needsEnrichment.push({
+        id: tx.id,
+        description: tx.description,
+        team1Abbrev: t1.abbreviation,
+        team2Abbrev: t2.abbreviation,
+        team1Sends: t1Empty ? [] : t1.sends,
+        team2Sends: t2Empty ? [] : t2.sends,
+      });
+    }
+  }
+
+  if (needsEnrichment.length === 0) return;
+
+  const enrichments = await enrichIncompleteTrades(needsEnrichment);
+  for (const trade of needsEnrichment) {
+    const returnAssets = enrichments.get(trade.id);
+    if (!returnAssets || returnAssets.length === 0) continue;
+
+    const tx = await prisma.transaction.findUnique({
+      where: { id: trade.id },
+      select: { playersInvolved: true },
+    });
+    if (!tx) continue;
+
+    const involved = tx.playersInvolved as Record<string, Record<string, unknown>>;
+    if (trade.team1Sends.length === 0) {
+      involved.team1.sends = returnAssets;
+    } else {
+      involved.team2.sends = returnAssets;
+    }
+
+    await prisma.transaction.update({
+      where: { id: trade.id },
+      data: { playersInvolved: JSON.parse(JSON.stringify(involved)) },
+    });
+  }
 }

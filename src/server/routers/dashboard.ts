@@ -362,21 +362,18 @@ export const dashboardRouter = router({
       const teamA = group[0].fromAbbrev;
       const teamB = group[0].toAbbrev;
 
-      // Players team A sends (went from A to B)
-      const teamASends = group
-        .filter((p: ParsedRosterTrade) => p.fromAbbrev === teamA)
-        .map((p: ParsedRosterTrade) => p.playerName);
-      // Players team B sends (went from B to A)
-      const teamBSends = group
-        .filter((p: ParsedRosterTrade) => p.fromAbbrev === teamB)
-        .map((p: ParsedRosterTrade) => p.playerName);
-
-      // If only one side has players, the other side likely sent draft pick(s)
-      if (teamASends.length > 0 && teamBSends.length === 0) {
-        teamBSends.push("Draft pick(s)");
-      } else if (teamBSends.length > 0 && teamASends.length === 0) {
-        teamASends.push("Draft pick(s)");
-      }
+      // Players team A sends (went from A to B) — deduplicate
+      const teamASends = Array.from(new Set(
+        group
+          .filter((p: ParsedRosterTrade) => p.fromAbbrev === teamA)
+          .map((p: ParsedRosterTrade) => p.playerName),
+      ));
+      // Players team B sends (went from B to A) — deduplicate
+      const teamBSends = Array.from(new Set(
+        group
+          .filter((p: ParsedRosterTrade) => p.fromAbbrev === teamB)
+          .map((p: ParsedRosterTrade) => p.playerName),
+      ));
 
       const firstTx = group[0].tx;
       result.push({

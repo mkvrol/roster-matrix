@@ -6,7 +6,7 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/page-header";
-import { Shield, Send, AlertTriangle, BarChart3, Search, X, RefreshCw, Users, Activity, Loader2 } from "lucide-react";
+import { Shield, Send, AlertTriangle, BarChart3, Search, X, RefreshCw, Users, Activity, ArrowLeftRight, Loader2 } from "lucide-react";
 
 const TYPE_LABELS: Record<string, { label: string; color: string }> = {
   SCORE_CHANGE: { label: "Score Changes", color: "text-info" },
@@ -265,6 +265,7 @@ function DataSyncPanel({ toast }: { toast: ReturnType<typeof useToast>["toast"] 
   const [rosterLoading, setRosterLoading] = useState(false);
   const [statsLoading, setStatsLoading] = useState(false);
   const [injuryLoading, setInjuryLoading] = useState(false);
+  const [tradeLoading, setTradeLoading] = useState(false);
   const [lastResult, setLastResult] = useState<{ job: string; data: any } | null>(null);
 
   const triggerSync = async (
@@ -298,10 +299,10 @@ function DataSyncPanel({ toast }: { toast: ReturnType<typeof useToast>["toast"] 
         <span className="text-data-xs text-text-muted">Manually trigger cron jobs</span>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <button
           onClick={() => triggerSync("roster-sync", "Roster Sync", setRosterLoading)}
-          disabled={rosterLoading || statsLoading || injuryLoading}
+          disabled={rosterLoading || statsLoading || injuryLoading || tradeLoading}
           className="flex items-center gap-2 rounded border border-border-subtle bg-surface-2 px-4 py-3 text-data-sm font-medium text-text-primary transition-colors hover:bg-surface-3 disabled:opacity-50"
         >
           {rosterLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Users className="h-4 w-4 text-info" />}
@@ -313,7 +314,7 @@ function DataSyncPanel({ toast }: { toast: ReturnType<typeof useToast>["toast"] 
 
         <button
           onClick={() => triggerSync("stats-sync", "Stats Sync", setStatsLoading)}
-          disabled={rosterLoading || statsLoading || injuryLoading}
+          disabled={rosterLoading || statsLoading || injuryLoading || tradeLoading}
           className="flex items-center gap-2 rounded border border-border-subtle bg-surface-2 px-4 py-3 text-data-sm font-medium text-text-primary transition-colors hover:bg-surface-3 disabled:opacity-50"
         >
           {statsLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <BarChart3 className="h-4 w-4 text-success" />}
@@ -325,13 +326,25 @@ function DataSyncPanel({ toast }: { toast: ReturnType<typeof useToast>["toast"] 
 
         <button
           onClick={() => triggerSync("injury-sync", "Injury Sync", setInjuryLoading)}
-          disabled={rosterLoading || statsLoading || injuryLoading}
+          disabled={rosterLoading || statsLoading || injuryLoading || tradeLoading}
           className="flex items-center gap-2 rounded border border-border-subtle bg-surface-2 px-4 py-3 text-data-sm font-medium text-text-primary transition-colors hover:bg-surface-3 disabled:opacity-50"
         >
           {injuryLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Activity className="h-4 w-4 text-warning" />}
           <div className="text-left">
             <p>Injury Sync</p>
             <p className="text-data-xs font-normal text-text-muted">Injury status updates</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => triggerSync("trade-sync", "Trade Sync", setTradeLoading)}
+          disabled={rosterLoading || statsLoading || injuryLoading || tradeLoading}
+          className="flex items-center gap-2 rounded border border-border-subtle bg-surface-2 px-4 py-3 text-data-sm font-medium text-text-primary transition-colors hover:bg-surface-3 disabled:opacity-50"
+        >
+          {tradeLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowLeftRight className="h-4 w-4 text-accent" />}
+          <div className="text-left">
+            <p>Trade Sync</p>
+            <p className="text-data-xs font-normal text-text-muted">NHL trade details</p>
           </div>
         </button>
       </div>

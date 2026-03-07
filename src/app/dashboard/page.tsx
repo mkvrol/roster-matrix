@@ -486,6 +486,35 @@ type RecentTransaction = {
   team: { id: string; name: string; abbreviation: string };
 };
 
+// Extract structured trade info from playersInvolved JSON (trade-sync format)
+type TradeInfo = {
+  team1Abbrev: string;
+  team2Abbrev: string;
+};
+
+function getTradeInfo(tx: RecentTransaction): TradeInfo | null {
+  if (tx.type !== "TRADE") return null;
+
+  // New trade-sync format: { team1: { abbreviation }, team2: { abbreviation } }
+  const involved = tx.playersInvolved as Record<string, unknown> | null;
+  if (involved && typeof involved === "object") {
+    const t1 = involved.team1 as Record<string, unknown> | undefined;
+    const t2 = involved.team2 as Record<string, unknown> | undefined;
+    if (t1?.abbreviation && t2?.abbreviation) {
+      return {
+        team1Abbrev: t1.abbreviation as string,
+        team2Abbrev: t2.abbreviation as string,
+      };
+    }
+  }
+
+  // Old roster-sync format: "X traded from AAA to BBB"
+  const m = tx.description.match(/traded from\s+(\w{2,3})\s+to\s+(\w{2,3})/);
+  if (m) return { team1Abbrev: m[1], team2Abbrev: m[2] };
+
+  return null;
+}
+
 function LeagueTransactions() {
   const { data, isLoading } = trpc.dashboard.getRecentTransactions.useQuery(
     undefined,
@@ -516,13 +545,6 @@ function LeagueTransactions() {
     );
   }
 
-  // Parse trade abbreviations from description ("X traded from AAA to BBB")
-  const parseTrade = (desc: string) => {
-    const m = desc.match(/^(.+?)\s+traded from\s+(\w+)\s+to\s+(\w+)$/);
-    if (m) return { playerName: m[1], from: m[2], to: m[3] };
-    return null;
-  };
-
   return (
     <SectionCard title="League Transactions" icon={ArrowLeftRight}>
       <div className="max-h-[400px] space-y-1 overflow-y-auto">
@@ -531,7 +553,7 @@ function LeagueTransactions() {
             bg: "bg-surface-2",
             text: "text-text-muted",
           };
-          const trade = tx.type === "TRADE" ? parseTrade(tx.description) : null;
+          const trade = getTradeInfo(tx);
 
           return (
             <div
@@ -546,9 +568,9 @@ function LeagueTransactions() {
               </span>
               {trade ? (
                 <div className="flex shrink-0 items-center gap-1">
-                  <TeamLogo teamAbbrev={trade.from} size="sm" />
+                  <TeamLogo teamAbbrev={trade.team1Abbrev} size="sm" />
                   <ArrowRight className="h-3 w-3 text-text-muted" />
-                  <TeamLogo teamAbbrev={trade.to} size="sm" />
+                  <TeamLogo teamAbbrev={trade.team2Abbrev} size="sm" />
                 </div>
               ) : (
                 <div className="flex shrink-0 items-center gap-1.5">
